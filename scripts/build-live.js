@@ -1,7 +1,10 @@
+// todo add logs
+
 import path from 'path';
 import fs from 'fs/promises';
-import child from 'child_process';
 import proc from 'process';
+
+import utils from './utils';
 
 const projectItems = [
     'builder',
@@ -11,52 +14,12 @@ const projectItems = [
     'shared'
 ];
 
-const findDirFromItems = async (items) => {
-    let current = path.resolve(process.cwd());
-
-    while (true) {
-        const matches = await Promise.all(items.map(async (item) => {
-            return fs.access(path.join(current, item))
-                .then(() => true)
-                .catch(() => false)
-        }));
-
-        if (matches.every(Boolean)) {
-            return current;
-        }
-
-        const parent = path.dirname(current);
-        if (parent === current) return null;
-
-        current = parent;
-    }
-};
-
-const runCommand = async (program, args, options) => {
-    return new Promise((resolve, reject) => {
-        const spawned = child.spawn(program, args, {
-            ...options,
-            stdio: 'inherit'
-        });
-
-        spawned.on('error', reject);
-
-        spawned.on('close', (code, signal) => {
-            if (code === 0) {
-                resolve();
-                return;
-            }
-
-            reject(new Error(`Error code ${code}${signal ? `, Signal ${signal}` : ''}`))
-        });
-    });
-};
-
 const project = {};
-project.root = await findDirFromItems(projectItems);
-project.live = path.join(project.root, '.live') || await fs.mkdir(path.join(project.root, '.live'), {
-    recursive: true
-});
+project.root = await utils.findDirFromItems(projectItems);
+
+const live = path.join(project.root, '.live');
+await fs.mkdir(live, { recursive: true });
+project.live = live;
 
 projectItems.forEach((item) => {
     project[item] = path.join(project.root, item);
@@ -64,7 +27,7 @@ projectItems.forEach((item) => {
 
 // builder website
 
-await runCommand('bunx', [
+await utils.runCommand('bunx', [
     'esbuild',
     path.join(project.builder, 'public', 'js', 'main.js'),
     '--bundle',
@@ -76,7 +39,7 @@ await runCommand('bunx', [
     proc.exit(1);
 });
 
-await runCommand('bunx', [
+await utils.runCommand('bunx', [
     'esbuild',
     path.join(project.builder, 'public', 'style.css'),
     '--bundle',
@@ -114,9 +77,111 @@ await fs.writeFile(path.join(project.live, 'builder.html'), newBuilderHtml, 'utf
 await fs.unlink(path.join(project.live, 'builderstyle.css.tmp'));
 await fs.unlink(path.join(project.live, 'builderscript.js.tmp'));
 
+// radithor update patch stuff fingerprints
+
+const BYTE_ARRAY_OPEN_PATTERN = /\[\]byte\s*\{/;
+const MATCH_ARRAY_PATTERN = /\/\/\s*LIVE_BUILDER_MATCH:([A-Z_]+)/;
+const FINGERPRINT_COMMENT_PATTERN = /\/\/\s*fingerprint\b/;
+const HEX_PATTERN = /0x[A-F0-9]{2}/g;
+
+const fingerprintMatches = new Map();
+
+const files = [
+    path.join(project.shared, 'constants.go'),
+    path.join(project.radithor, 'store', 'patch.go')
+];
+
+files.forEach(async (path) => {
+    const data = await fs.readFile(path, 'utf-8');
+    const lines = data.split('\n');
+
+    let writeFile = false;
+
+    for (let i = 0; i < lines.length; i++) {
+        const code = utils.getCodePart(lines[i]);
+        if (!BYTE_ARRAY_OPEN_PATTERN.test(code)) {
+            continue;
+        }
+
+        let end = -1;
+        for (let i2 = i + 1; i2 < lines.length; i2++) {
+            const ending = utils
+                .getCodePart(lines[i2])
+                .trim()
+                .startsWith('}');
+
+            if (ending) {
+                end = i2;
+                break;
+            }
+        }
+
+        if (end === -1) {
+            continue;
+        }
+
+        const fingerprints = [];
+        let byteCount = 0;
+
+        for (let i2 = i + 1; i2 < lines.length; i2++) {
+            if (!FINGERPRINT_COMMENT_PATTERN.test(lines[i2])) {
+                continue;
+            }
+
+            const hexMatches = utils
+                .getCodePart(lines[i2])
+                .match(HEX_PATTERN) || [];
+
+            if (hexMatches.length > 0) {
+                fingerprints.push(i2);
+                byteCount += hexMatches.length;
+            }
+        }
+
+        if (byteCount === 0) {
+            i = end;
+            continue;
+        }
+
+        const matchName = (lines[i].match(MATCH_ARRAY_PATTERN) || [])[1];
+        let bytes;
+
+        if (matchName && fingerprintMatches.has(matchName)) {
+            bytes = fingerprintMatches.get(matchName);
+            if (bytes.length !== byteCount) {
+                i = end;
+                continue;
+            }
+        } else {
+            bytes = new Uint8Array(byteCount);
+            crypto.getRandomValues(bytes);
+
+            if (matchName) fingerprintMatches.set(matchName, bytes);
+        }
+
+        let theByte = 0;
+        fingerprints.forEach((thing) => {
+            const line = lines[thing];
+            const index = line.indexOf('//');
+            const code = line
+                .slice(0, index)
+                .replace(HEX_PATTERN, () => utils.bytesToHexString(bytes[theByte++]));
+
+            lines[thing] = code + line.slice(index);
+        });
+
+        writeFile = true;
+        i = end;
+    };
+
+    if (writeFile) {
+        await fs.writeFile(path, lines.join('\n'), 'utf-8');
+    }
+});
+
 // builder backend
 
-await runCommand('go', [
+await utils.runCommand('go', [
     'build',
     '-o', path.join(project.live, 'builder.exe'),
     '-trimpath',
@@ -130,84 +195,39 @@ await runCommand('go', [
     proc.exit(1);
 });
 
-// radithor config
+// radithor gen config mapping
 
-const flagBlobIndexes = {};
-const configs = [];
+const CONFIG_BLOCK_PATTERN = /const\s*\(\s*\/\/\s*LIVE_BUILDER_CONFIG_IDS/;
+const CONFIG_VAR_PATTERN = /^\s*([A-Z_][A-Z_]*)\s+uint8\s*=\s*(\d+)/gm;
 
-// regexps generated by GPT-5.6 Luna
-const flagBobIndexesPattern = /\bconst\s*\(\s*\/\/[^\n]*LIVE_BUILDER_FLAG_BLOB_INDEXES[^\n]*\n([\s\S]*?)\)/g;
-const uint8Pattern = /^\s*([A-Z_][A-Z_]*)\s+uint8\s*=\s*(\d+)\s*$/gm;
-const byteArrayPattern = /((?:\bvar\s*(?:\(\s*)?)?[A-Za-z_]\w*\s*=\s*\[(\d+)\]byte\s*\{\s*)([\s\S]*?)(\s*\})/g;
-const configNamePattern = /([A-Za-z]\w*)\s*=\s*\[/
-const configByteArrayPattern = /0[x][0-9A-F]{1,2}/g
+const configIdsData = await fs.readFile(path.join(project.radithor, 'store', 'config.go'), 'utf-8');
 
-const radithorConfigPath = path.join(project.radithor, 'store', 'config', 'buildtime.go');
-const radithorConfig = await fs.readFile(radithorConfigPath, 'utf-8');
+const configBlock = CONFIG_BLOCK_PATTERN.exec(configIdsData);
+const blockStart = configBlock.index + configBlock[0].length;
+const blockEnd = configIdsData.indexOf(')', blockStart);
+const theBlock = configIdsData.slice(blockStart, blockEnd);
 
-[...radithorConfig.matchAll(flagBobIndexesPattern)].forEach((match) => {
-    const blob = match[1];
+const configMapping = {};
 
-    [...blob.matchAll(uint8Pattern)].forEach((variable) => {
-        const name = variable[1];
-        const value = variable[2];
+let match = null;
+while ((match = CONFIG_VAR_PATTERN.exec(theBlock)) !== null) {
+    const [_, name, id] = match;
+    const theId = parseInt(id, 10);
 
-        flagBlobIndexes[name] = Number.parseInt(value, 10);
-    });
-});
+    configMapping[name] = theId;
+}
 
-const updatedConfig = radithorConfig.replace(byteArrayPattern, (match, prefix, length, body, end) => {
-    const nameMatch = prefix.match(configNamePattern);
-    if (!nameMatch) return match;
-
-    const name = nameMatch[1];
-    const theLength = Number(length);
-
-    const bytes = body.match(configByteArrayPattern);
-    if (bytes.length < 8) return match;
-
-    const fingerprint = new Uint8Array(8);
-    crypto.getRandomValues(fingerprint);
-
-    const newBytes = Array.from(fingerprint, (byte) => {
-        return `0x${byte.toString(16).padStart(2, '0').toUpperCase()}`;
-    });
-
-    let updated = 0;
-
-    const updateBody = body.replace(configByteArrayPattern, (oldByte) => {
-        if (updated >= 8) {
-            return oldByte;
-        }
-
-        return newBytes[updated++];
-    });
-
-    configs.push({
-        name: name,
-        length: theLength,
-        fingerprint: Array.from(fingerprint)
-    });
-
-    return prefix + updateBody + end;
-});
-
-await fs.writeFile(radithorConfigPath, updatedConfig, 'utf-8').catch((err) => {
-    console.error('failed to write builder site file -', err);
-    proc.exit(1);
-});
-
-await fs.writeFile(path.join(project.live, 'radithor.json'), JSON.stringify({
-    indexes: flagBlobIndexes,
-    configs: configs
-}), 'utf-8').catch((err) => {
-    console.error('failed to write builder site file -', err);
+await fs.writeFile(
+    path.join(project.live, 'radithor.cfgmap.json'),
+    JSON.stringify(configMapping), 'utf-8'
+).catch((err) => {
+    console.error('failed to write radithor config map -', err);
     proc.exit(1);
 });
 
 // radithor
 
-await runCommand('go', [
+await utils.runCommand('go', [
     'build',
     '-o', path.join(project.live, 'radithor.bin'),
     '-trimpath',
