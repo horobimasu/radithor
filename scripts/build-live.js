@@ -81,14 +81,14 @@ await fs.unlink(path.join(project.live, 'builderscript.js.tmp'));
 
 const BYTE_ARRAY_OPEN_PATTERN = /\[\]byte\s*\{/;
 const MATCH_ARRAY_PATTERN = /\/\/\s*LIVE_BUILDER_MATCH:([A-Z_]+)/;
-const FINGERPRINT_COMMENT_PATTERN = /\/\/\s*fingerprint\b/;
+const FINGERPRINT_COMMENT_PATTERN = /\/\/\s*Fingerprint\b/;
 const HEX_PATTERN = /0x[A-F0-9]{2}/g;
 
 const fingerprintMatches = new Map();
 
 const files = [
     path.join(project.shared, 'constants.go'),
-    path.join(project.radithor, 'store', 'patch.go')
+    path.join(project.shared, 'patch', 'radithor.go')
 ];
 
 files.forEach(async (path) => {
