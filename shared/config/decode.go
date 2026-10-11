@@ -2,76 +2,33 @@ package config
 
 import "encoding/binary"
 
-func GetConfigU8(rawConfig []byte, id uint8) (uint8, bool) {
-	data, found := GetConfig(rawConfig, id)
+func GetConfigAnyRaw[T any](rawConfig []byte, id uint8) T {
+	var thing T
+
+	data, found := GetConfigRaw(rawConfig, id)
 	if !found {
-		return 0, false
+		return thing
 	}
 
-	value, correct := data.(uint8)
-	return value, correct
+	value, _ := data.(T)
+	return value
 }
 
-func GetConfigU16(rawConfig []byte, id uint8) (uint16, bool) {
-	data, found := GetConfig(rawConfig, id)
+func GetConfigStringRaw(rawConfig []byte, id uint8) string {
+	data, found := GetConfigRaw(rawConfig, id)
 	if !found {
-		return 0, false
+		return ""
 	}
 
-	value, correct := data.(uint16)
-	return value, correct
-}
-
-func GetConfigU32(rawConfig []byte, id uint8) (uint32, bool) {
-	data, found := GetConfig(rawConfig, id)
-	if !found {
-		return 0, false
+	bytes, correct := data.([]byte)
+	if !correct {
+		return ""
 	}
 
-	value, correct := data.(uint32)
-	return value, correct
+	return string(bytes)
 }
 
-func GetConfigU64(rawConfig []byte, id uint8) (uint64, bool) {
-	data, found := GetConfig(rawConfig, id)
-	if !found {
-		return 0, false
-	}
-
-	value, correct := data.(uint64)
-	return value, correct
-}
-
-func GetConfigBytes(rawConfig []byte, id uint8) ([]byte, bool) {
-	data, found := GetConfig(rawConfig, id)
-	if !found {
-		return nil, false
-	}
-
-	value, correct := data.([]byte)
-	return value, correct
-}
-
-func GetConfigString(rawConfig []byte, id uint8) (string, bool) {
-	data, found := GetConfigBytes(rawConfig, id)
-	if !found {
-		return "", false
-	}
-
-	return string(data), true
-}
-
-func GetConfigBool(rawConfig []byte, id uint8) (bool, bool) {
-	data, found := GetConfig(rawConfig, id)
-	if !found {
-		return false, false
-	}
-
-	value, correct := data.(bool)
-	return value, correct
-}
-
-func GetConfig(rawConfig []byte, id uint8) (any, bool) {
+func GetConfigRaw(rawConfig []byte, id uint8) (any, bool) {
 	kind, data, found := findConfigId(rawConfig, id)
 	if !found {
 		return nil, false
