@@ -1,5 +1,5 @@
 /.live
 /.builds
-/.todo
 
 *.exe
+*.tmp

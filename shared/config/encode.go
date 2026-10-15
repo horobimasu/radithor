@@ -49,7 +49,7 @@ func EncodeConfigs(values map[string]any, ids map[string]uint8, ignores []string
 
 		done, seen := doneIds[id]
 		if seen {
-			return nil, fmt.Errorf("key %q and %q are mapped to the same Id (%d)", done, key, id)
+			return nil, fmt.Errorf("key %q and %q are mapped to the same ID (%d)", done, key, id)
 		}
 
 		doneIds[id] = key
