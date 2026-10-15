@@ -26,7 +26,7 @@ func LogInfo(msg string, args ...any) {
 	if len(args) == 0 {
 		fmt.Print("[INFO] %s\n", msg)
 	} else {
-		fmt.Print("[INFO] %s %s\n", msg, fmt.Sprint(args...))
+		fmt.Printf("[INFO] "+msg+"\n", args...)
 	}
 }
 
@@ -34,7 +34,7 @@ func LogWarning(msg string, args ...any) {
 	if len(args) == 0 {
 		fmt.Print("[WARN] %s\n", msg)
 	} else {
-		fmt.Print("[WARN] %s %s\n", msg, fmt.Sprint(args...))
+		fmt.Printf("[WARN] "+msg+"\n", args...)
 	}
 }
 
@@ -42,6 +42,6 @@ func LogError(msg string, args ...any) {
 	if len(args) == 0 {
 		fmt.Print("[ERROR] %s\n", msg)
 	} else {
-		fmt.Print("[ERROR] %s %s\n", msg, fmt.Sprint(args...))
+		fmt.Printf("[ERROR] "+msg+"\n", args...)
 	}
 }
