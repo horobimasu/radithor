@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+
+<html lang="en">
+    <head>
+        <title>localhost</title>
+
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+        <style>
+            /* LIVE_BUILDER_CSS */
+        </style>
+    </head>
+
+    <body>
+        <div class="container">
+            <div class="sidebar">
+                <div class="tab-container">
+                    <div class="tab-title">radithor</div>
+                    <button class="tab-button active" data-tab="bot">bot</button>
+                    <button class="tab-button" data-tab="setup">setup</button>
+                    <button class="tab-button" data-tab="options">options</button>
+                    <button class="tab-button" data-tab="persistence">persistence</button>
+                    <button class="tab-button" data-tab="advanced">advanced</button>
+
+                    <div class="tab-divider"></div>
+
+                    <div class="tab-title">settings</div>
+                    <button class="tab-button" data-tab="site" style="background: var(--primary)">site settings</button>
+                    <button class="tab-button" data-tab="build" style="background: var(--primary)">build settings</button>
+                </div>
+
+                <div style="flex: 1;"></div>
+
+                <div class="actions">
+                    <div class="build-tag">default</div>
+                    <button class="build-button" id="build">build</button>
+                </div>
+            </div>
+
+            <main class="main">
+                <div class="panel">
+                    <div class="content active" id="bot-tab"></div>
+                    <div class="content" id="options-tab"></div>
+                    <div class="content" id="setup-tab"></div>
+                    <div class="content" id="persistence-tab"></div>
+                    <div class="content" id="advanced-tab"></div>
+
+                    <div class="content" id="site-tab"></div>
+                    <div class="content" id="build-tab"></div>
+                </div>
+            </main>
+        </div>
+
+        <div class="notifs"></div>
+    </body>
+
+    <script>
+        // LIVE_BUILDER_JS
+    </script>
+</html>

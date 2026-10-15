@@ -1,0 +1,56 @@
+package routes
+
+import (
+	"crypto/ecdh"
+	"encoding/base64"
+	"encoding/json"
+	"fmt"
+	"net/http"
+
+	"radithor-builder/store"
+	"radithor-builder/utils"
+)
+
+type keyBody struct {
+	Key string `json:"key"`
+}
+
+func getServerKey(w http.ResponseWriter, r *http.Request) {
+	var body keyBody
+
+	err := json.NewDecoder(r.Body).Decode(&body)
+	if err != nil {
+		http.Error(w, fmt.Sprintf("failed to decode body - %v", err), http.StatusInternalServerError)
+		return
+	}
+
+	decodedClientPublicKey, err := base64.StdEncoding.DecodeString(body.Key)
+	if err != nil {
+		http.Error(w, fmt.Sprintf("failed to decode key - %v", err), http.StatusInternalServerError)
+		return
+	}
+
+	clientPublicKey, err := ecdh.P256().NewPublicKey(decodedClientPublicKey)
+	if err != nil {
+		http.Error(w, fmt.Sprintf("failed to resolve client key - %v", err), http.StatusInternalServerError)
+		return
+	}
+
+	privateKey, err := utils.GenerateE2eeKey()
+	if err != nil {
+		http.Error(w, fmt.Sprintf("failed to generate key pair - %v", err), http.StatusInternalServerError)
+		return
+	}
+
+	store.SharedSecret, err = privateKey.ECDH(clientPublicKey)
+	if err != nil {
+		http.Error(w, fmt.Sprintf("failed to generate shared secret - %v", err), http.StatusInternalServerError)
+		return
+	}
+
+	publicKey := privateKey.PublicKey()
+	encodedPublicKey := base64.StdEncoding.EncodeToString(publicKey.Bytes())
+
+	w.Header().Set("Content-Type", "text/plain")
+	w.Write([]byte(encodedPublicKey))
+}

