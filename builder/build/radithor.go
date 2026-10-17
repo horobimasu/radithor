@@ -119,7 +119,7 @@ func GenerateRadithorBuild(w http.ResponseWriter, r *http.Request) {
 		configIds[name] = uint8(id)
 	}
 
-	encoded, err := config.EncodeConfigs(reqBody, configIds, ignroedConfigs, store.DEBUG)
+	encoded, err := config.EncodeConfigs(reqBody, configIds, ignroedConfigs, store.DEBUG && store.DEBUG_PRINT_CONFIG_TYPES)
 	if err != nil {
 		http.Error(w, fmt.Sprintf("failed to encode radithor config - %v", err), http.StatusBadRequest)
 		return

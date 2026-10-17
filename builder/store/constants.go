@@ -4,6 +4,8 @@ const (
 	PORT = "1918"
 
 	DEBUG = true
+
+	DEBUG_PRINT_CONFIG_TYPES = false
 )
 
 const (
