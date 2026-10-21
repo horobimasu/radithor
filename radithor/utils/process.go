@@ -7,6 +7,7 @@ import (
 	"syscall"
 	"unsafe"
 
+	"github.com/horobimasu/windowsx"
 	"golang.org/x/sys/windows"
 )
 
@@ -29,6 +30,32 @@ func TerminateProc(pid uint32) error {
 	defer windows.CloseHandle(handle)
 
 	return windows.TerminateProcess(handle, 0)
+}
+
+func GetWindowTitlesFromPid(pid uint32) ([]string, error) {
+	var result []string
+
+	err := windows.EnumWindows(syscall.NewCallback(func(handle windows.HWND, _ uintptr) uintptr {
+		var itsPid uint32
+		windows.GetWindowThreadProcessId(handle, &itsPid)
+
+		if itsPid != pid {
+			return 1
+		}
+
+		title, err := windowsx.GetWindowText(uintptr(handle))
+		if err == nil && title != "" {
+			result = append(result, title)
+		}
+
+		return 1
+	}), nil)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return result, nil
 }
 
 func GetProcNameFromPid(pid uint32) (string, error) {

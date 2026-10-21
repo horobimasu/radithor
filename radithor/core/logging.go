@@ -82,7 +82,7 @@ func log(text string) {
 
 func GetLogsFilePath() (*DiskFile, string, error) { // disk file, proxy file path, error
 	if logDiskFile == nil {
-		file, err := GetOrCreateFile(_LOGS_FILE_NAME)
+		file, err := GetOrCreateDiskFile(_LOGS_FILE_NAME)
 		if err != nil {
 			return nil, "", err
 		}

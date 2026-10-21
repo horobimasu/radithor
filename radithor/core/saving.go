@@ -21,7 +21,7 @@ type DiskFile struct {
 	data []byte
 }
 
-func GetOrCreateFile(name string) (*DiskFile, error) {
+func GetOrCreateDiskFile(name string) (*DiskFile, error) {
 	fullHash := sha256.Sum256([]byte(name))
 	nameHash := hex.EncodeToString(fullHash[:])[:12]
 

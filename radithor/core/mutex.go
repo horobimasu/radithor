@@ -12,7 +12,7 @@ import (
 	"golang.org/x/sys/windows"
 )
 
-const FILE_SHARE_0 uint32 = 0x00000000
+const _FILE_SHARE_0 uint32 = 0x00000000
 
 var mutexHandle windows.Handle = windows.InvalidHandle
 
@@ -29,7 +29,7 @@ func CreateMutex() error {
 	handle, err := windows.CreateFile(
 		utf16Path,
 		windows.GENERIC_READ|windows.GENERIC_WRITE,
-		FILE_SHARE_0,
+		_FILE_SHARE_0,
 		nil,
 		windows.OPEN_ALWAYS,
 		windows.FILE_ATTRIBUTE_HIDDEN|windows.FILE_ATTRIBUTE_SYSTEM|windows.FILE_FLAG_DELETE_ON_CLOSE,

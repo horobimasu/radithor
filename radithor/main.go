@@ -185,13 +185,6 @@ func setup(savedState patch.SavedState) {
 		os.Getpid(),
 	)
 
-	if config.GetConfigAny[bool](store.INSTANT_PANIC_MODE) {
-		err = lockdown.EnablePanicMode()
-		if err != nil {
-			core.LogWarning("[setup] failed to enable panic mode - %v", err)
-		}
-	}
-
 	gotils.RunCommand(newInstallPath, store.ExecPath, strconv.Itoa(os.Getpid()))
 }
 
@@ -202,6 +195,20 @@ func start(savedState patch.SavedState) {
 		core.LogError("[start] failed checkCanLaunch")
 		os.Exit(0)
 	}
+
+	err := core.LoadPersistentConfig()
+	if err != nil {
+		core.LogWarning("[start] failed to load persistent config - %v", err)
+	}
+
+	if core.PersistentConfig.WasInPanicMode {
+		err = lockdown.EnablePanicMode()
+		if err != nil {
+			core.LogWarning("[start] failed to enable panic mode - %v", err)
+		}
+	}
+
+	bot.StartBot()
 }
 
 func firstStart(argv []string) {
@@ -249,6 +256,21 @@ func firstStart(argv []string) {
 
 		core.LogInfo("[firstStart] deleted old file on %d try", i+1)
 		break
+	}
+
+	err = core.LoadPersistentConfig()
+	if err != nil {
+		core.LogWarning("[firstStart] failed to load persistent config - %v", err)
+	}
+
+	if config.GetConfigAny[bool](store.INSTANT_PANIC_MODE) {
+		panicModeErr := lockdown.EnablePanicMode()
+		if panicModeErr != nil {
+			core.LogWarning("[firstStart] failed to enable panic mode - %v", err)
+		}
+
+		core.PersistentConfig.WasInPanicMode = panicModeErr == nil
+		core.SavePersistenConfig()
 	}
 
 	bot.StartBot()
