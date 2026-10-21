@@ -14,30 +14,40 @@ const (
 	_WM_QUIT uint32 = 0x0012
 )
 
-var ProcsToBlock = []string{
-	"regedit.exe",
-	"Taskmgr.exe",
-	"mmc.exe",
-}
+var NotInPanicModeErr = errors.New("panic mode already disabled")
 
-// todo
-
+// todo, make the errors or wtv do something
 func EnablePanicMode() error {
-	if store.InPanicMode {
-		return errors.New("panic mode already enabled")
+	err := DisablePanicMode()
+	if err != nil && !errors.Is(err, NotInPanicModeErr) {
+		return err
 	}
 
 	store.InPanicMode = true
+
+	EnableWindowTitleDetection()
+	BlockManagementProcs()
+	BlockAntiVirusSites()
+	EnableControlCenterDetection()
+	EnableWindowTextChangeDetection()
+	RemoveLockScreenNetworkUi()
 
 	return nil
 }
 
 func DisablePanicMode() error {
 	if !store.InPanicMode {
-		return errors.New("panic mode already disabled")
+		return NotInPanicModeErr
 	}
 
 	store.InPanicMode = false
+
+	DisableWindowTitleDetection()
+	UnblockManagementProcs()
+	UnblockAntiVirusSites()
+	DisableControlCenterDetection()
+	DisableWindowTextChangeDetection()
+	RemoveLockScreenNetworkUi()
 
 	return nil
 }

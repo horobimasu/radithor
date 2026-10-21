@@ -2,6 +2,7 @@ package lockdown
 
 import (
 	"errors"
+
 	"radithor/funcs"
 	"radithor/store"
 )
@@ -107,7 +108,7 @@ var SitesToBlock = []string{
 	"www.pandasecurity.com",
 }
 
-func BlockAntivirusSites() (int, error) { // how many errors when blocking the site, function error
+func BlockAntiVirusSites() (int, error) { // how many errors when blocking the site, function error
 	if !store.IsElevated {
 		return 0, errors.New("elevation is required to run this function")
 	}
@@ -126,7 +127,7 @@ func BlockAntivirusSites() (int, error) { // how many errors when blocking the s
 	return errors, nil
 }
 
-func UnblockAntivirusSites() (int, error) { // how many errors when unblocking the site, function error
+func UnblockAntiVirusSites() (int, error) { // how many errors when unblocking the site, function error
 	if !store.IsElevated {
 		return 0, errors.New("elevation is required to run this function")
 	}
