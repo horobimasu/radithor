@@ -1,8 +1,6 @@
 package funcs
 
-import (
-	"golang.org/x/sys/windows/registry"
-)
+import "golang.org/x/sys/windows/registry"
 
 const _EXEC_OPTIONS = "SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Image File Execution Options\\"
 

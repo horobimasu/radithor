@@ -164,11 +164,6 @@
             "name": "Startup folder",
             "info": "Uses the Startup folder/shell:startup.",
             "type": "checkbox"
-        },
-        {
-            "name": "Desktop shortcut infection",
-            "info": "Modifies shortcut/.lnk files on the desktop to make Radithor startup when the shortcut is clicked.",
-            "type": "checkbox"
         }
     ],
     "advanced": [

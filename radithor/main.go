@@ -14,6 +14,7 @@ import (
 	"radithor/bot"
 	"radithor/core"
 	"radithor/core/lockdown"
+	"radithor/core/persistence"
 	"radithor/funcs"
 	"radithor/store"
 	"radithor/utils"
@@ -177,6 +178,8 @@ func setup(savedState patch.SavedState) {
 		core.LogError("[setup] failed to patch new file - %v", err)
 		os.Exit(0)
 	}
+
+	persistence.Persist(newInstallPath)
 
 	core.LogInfo(
 		"[setup] launching new file... %q [%q %d]",
