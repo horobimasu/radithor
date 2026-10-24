@@ -15,6 +15,7 @@ type keyBody struct {
 	Key string `json:"key"`
 }
 
+// todo, when e2ee is disabled clear the key
 func getServerKey(w http.ResponseWriter, r *http.Request) {
 	var body keyBody
 

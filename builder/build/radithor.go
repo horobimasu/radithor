@@ -119,7 +119,7 @@ func GenerateRadithorBuild(w http.ResponseWriter, r *http.Request) {
 		configIds[name] = uint8(id)
 	}
 
-	encoded, err := config.EncodeConfigs(reqBody, configIds, ignroedConfigs, store.DEBUG && store.DEBUG_PRINT_CONFIG_TYPES)
+	encoded, err := config.EncodeConfigs(reqBody, configIds, ignroedConfigs, utils.LogDebug)
 	if err != nil {
 		http.Error(w, fmt.Sprintf("failed to encode radithor config - %v", err), http.StatusBadRequest)
 		return
@@ -156,7 +156,7 @@ func GenerateRadithorBuild(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	newRadithorStubPath, err := utils.WriteToBuildsDir("wow.exe", newRadithorStub)
+	newRadithorStubPath, err := utils.WriteToBuildsDir("radithor.exe", newRadithorStub)
 	if err != nil {
 		http.Error(w, fmt.Sprintf("failed to write radithor build - %v", err), http.StatusBadRequest)
 		return

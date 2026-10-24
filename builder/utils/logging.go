@@ -24,7 +24,7 @@ func NewLogChunk() {
 
 func LogInfo(msg string, args ...any) {
 	if len(args) == 0 {
-		fmt.Print("[INFO] %s\n", msg)
+		fmt.Printf("[INFO] %s\n", msg)
 	} else {
 		fmt.Printf("[INFO] "+msg+"\n", args...)
 	}
@@ -32,7 +32,7 @@ func LogInfo(msg string, args ...any) {
 
 func LogWarning(msg string, args ...any) {
 	if len(args) == 0 {
-		fmt.Print("[WARN] %s\n", msg)
+		fmt.Printf("[WARN] %s\n", msg)
 	} else {
 		fmt.Printf("[WARN] "+msg+"\n", args...)
 	}
@@ -40,7 +40,7 @@ func LogWarning(msg string, args ...any) {
 
 func LogError(msg string, args ...any) {
 	if len(args) == 0 {
-		fmt.Print("[ERROR] %s\n", msg)
+		fmt.Printf("[ERROR] %s\n", msg)
 	} else {
 		fmt.Printf("[ERROR] "+msg+"\n", args...)
 	}

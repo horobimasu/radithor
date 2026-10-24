@@ -10,6 +10,8 @@ var (
 
 	BuilderFilePath = ""
 	BuilderDirPath  = ""
+
+	BuildId int64
 )
 
 func InitState() {
