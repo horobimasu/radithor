@@ -1,5 +1,3 @@
-// todo add logs
-
 import path from 'path';
 import fs from 'fs/promises';
 import proc from 'process';
@@ -13,6 +11,8 @@ const projectItems = [
     'runner',
     'shared'
 ];
+
+const startBuild = performance.now();
 
 const project = {};
 project.root = await utils.findDirFromItems(projectItems);
@@ -33,8 +33,9 @@ await utils.runCommand('bunx', [
     '--bundle',
     '--format=esm',
     '--minify',
+    '--log-level=warning',
     '--outfile=' + path.join(project.live, 'builderscript.js.tmp')
-]).catch((err) => {
+], { stdio: 'ignore' }).catch((err) => {
     console.error('failed to bundle builder site js -', err);
     proc.exit(1);
 });
@@ -45,6 +46,7 @@ await utils.runCommand('bunx', [
     '--bundle',
     '--format=esm',
     '--minify',
+    '--log-level=warning',
     '--outfile=' + path.join(project.live, 'builderstyle.css.tmp')
 ]).catch((err) => {
     console.error('failed to bundle builder site css -', err);
@@ -76,6 +78,8 @@ await fs.writeFile(path.join(project.live, 'builder.html'), newBuilderHtml, 'utf
 
 await fs.unlink(path.join(project.live, 'builderstyle.css.tmp'));
 await fs.unlink(path.join(project.live, 'builderscript.js.tmp'));
+
+console.log('done builder frontend');
 
 // radithor update patch stuff fingerprints
 
@@ -179,6 +183,8 @@ files.forEach(async (path) => {
     }
 });
 
+console.log('done patch fingerprints');
+
 // builder backend
 
 await utils.runCommand('go', [
@@ -194,6 +200,8 @@ await utils.runCommand('go', [
     console.error('failed to build builder server -', err);
     proc.exit(1);
 });
+
+console.log('done builder backend');
 
 // radithor gen config mapping
 
@@ -225,6 +233,8 @@ await fs.writeFile(
     proc.exit(1);
 });
 
+console.log('done radithor config map');
+
 // radithor
 
 await utils.runCommand('go', [
@@ -240,3 +250,6 @@ await utils.runCommand('go', [
     console.error('failed to build radithor -', err);
     proc.exit(1);
 });
+
+console.log('done radithor');
+console.log(`build done in ${(performance.now() - startBuild).toFixed(2)}ms!`);
