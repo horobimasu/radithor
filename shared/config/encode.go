@@ -15,7 +15,7 @@ type boolConfig struct {
 	Value bool
 }
 
-func EncodeConfigs(values map[string]any, ids map[string]uint8, ignores []string, printTypes bool) ([]byte, error) {
+func EncodeConfigs(values map[string]any, ids map[string]uint8, ignores []string, printFunc func(string, ...any)) ([]byte, error) {
 	ignore := make(map[string]bool, len(ignores))
 	for _, v := range ignores {
 		ignore[v] = true
@@ -63,9 +63,7 @@ func EncodeConfigs(values map[string]any, ids map[string]uint8, ignores []string
 				Value: theVal,
 			})
 
-			if printTypes {
-				fmt.Printf("%s -> bool\n", goName)
-			}
+			printFunc("%s -> bool", goName)
 
 		case float64:
 			if theVal < 0 {
@@ -76,7 +74,7 @@ func EncodeConfigs(values map[string]any, ids map[string]uint8, ignores []string
 				return nil, fmt.Errorf("key %q needs to be a whole number", key)
 			}
 
-			writeConfigSmallestNumber(&buffer, id, uint(theVal), key, printTypes)
+			writeConfigSmallestNumber(&buffer, id, uint(theVal), key, printFunc)
 
 		case string:
 			data := []byte(theVal)
@@ -89,9 +87,7 @@ func EncodeConfigs(values map[string]any, ids map[string]uint8, ignores []string
 			binary.Write(&buffer, binary.LittleEndian, uint16(len(data)))
 			buffer.Write(data)
 
-			if printTypes {
-				fmt.Printf("%s -> string\n", goName)
-			}
+			printFunc("%s -> string", goName)
 
 		default:
 			return nil, fmt.Errorf("key %q is an unsupported type (%T)", key, val)
@@ -156,7 +152,7 @@ func getSmallestNumberType(num uint) (byte, uint) { // type, size
 	}
 }
 
-func writeConfigSmallestNumber(buffer *bytes.Buffer, id uint8, num uint, key string, printTypes bool) {
+func writeConfigSmallestNumber(buffer *bytes.Buffer, id uint8, num uint, key string, printFunc func(string, ...any)) {
 	kind, _ := getSmallestNumberType(num)
 
 	buffer.WriteByte(id)
@@ -166,29 +162,21 @@ func writeConfigSmallestNumber(buffer *bytes.Buffer, id uint8, num uint, key str
 	case _ITEM_TYPE_U8:
 		buffer.WriteByte(byte(num))
 
-		if printTypes {
-			fmt.Printf("%s -> u8\n", key)
-		}
+		printFunc("%s -> u8", key)
 
 	case _ITEM_TYPE_U16:
 		binary.Write(buffer, binary.LittleEndian, uint16(num))
 
-		if printTypes {
-			fmt.Printf("%s -> u16\n", key)
-		}
+		printFunc("%s -> u16", key)
 
 	case _ITEM_TYPE_U32:
 		binary.Write(buffer, binary.LittleEndian, uint32(num))
 
-		if printTypes {
-			fmt.Printf("%s -> u32\n", key)
-		}
+		printFunc("%s -> u32", key)
 
 	case _ITEM_TYPE_U64:
 		binary.Write(buffer, binary.LittleEndian, num)
 
-		if printTypes {
-			fmt.Printf("%s -> u64\n", key)
-		}
+		printFunc("%s -> u64", key)
 	}
 }
