@@ -149,7 +149,7 @@ func setup(savedState patch.SavedState) {
 
 	core.LogInfo("[setup] new install path: %s", newInstallPath)
 
-	err := gotils.CopyFile(store.ExecPath, newInstallPath)
+	err := utils.CopyFile(store.ExecPath, newInstallPath)
 	if err != nil {
 		core.LogError("[setup] failed to copy file to new install path - %v", err)
 		os.Exit(0)
@@ -180,6 +180,11 @@ func setup(savedState patch.SavedState) {
 	}
 
 	persistence.Persist(newInstallPath)
+
+	err = core.RemoveMutex()
+	if err != nil {
+		core.LogWarning("[setup] failed to remove mutex - %v", err)
+	}
 
 	core.LogInfo(
 		"[setup] launching new file... %q [%q %d]",

@@ -45,7 +45,7 @@ package persistence
 
 // 	newAllTargetsPath := gotils.ExpandPath(_NEW_TARGETS_SCRIPTS_STORE_DIR_PATH)
 
-// 	err = os.MkdirAll(newAllTargetsPath, 0666)
+// 	err = os.MkdirAll(newAllTargetsPath, 0755)
 // 	if err != nil {
 // 		return err
 // 	}
