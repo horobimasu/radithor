@@ -169,7 +169,7 @@
     "advanced": [
         {
             "name": "Whitelisted operator IDs",
-            "info": "User IDs of users that are allowed to run commands and interact with the bot. Whitelisted users can whitelist other users. If the value of this is empty, everyone in the server will be able to interact with the bot. Separate with \";\".",
+            "info": "User IDs of users that are allowed to run commands and interact with the bot. Whitelisted users can whitelist other users. If the value of this is empty, everyone in the server will be able to interact with the bot. Separate with \";\". %OWNER% will always be the ID of the server owner.",
             "type": "text"
         },
         {
