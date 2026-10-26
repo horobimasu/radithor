@@ -12,7 +12,7 @@ import (
 	"github.com/horobimasu/gotils"
 )
 
-const _LOGS_FILE_NAME string = "logs"
+const _LOGS_FILE_NAME = "logs"
 
 var (
 	logDiskFile      *DiskFile

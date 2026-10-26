@@ -1,6 +1,8 @@
 package bot
 
 import (
+	commands_this "radithor/bot/commands/this"
+
 	"radithor/bot/commands"
 	"radithor/bot/discord"
 )
@@ -14,7 +16,10 @@ var commandsList = make(map[string]discord.Command)
 
 func RegisterCommands() {
 	cmds := []discord.Command{
+		commands_this.NewThisCommand(),
+
 		&commands.PingCommand{},
+		&commands.ScreenshotCommand{},
 	}
 
 	for _, cmd := range cmds {

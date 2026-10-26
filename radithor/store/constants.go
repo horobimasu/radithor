@@ -25,6 +25,6 @@ const (
 )
 
 const (
-	VERSION_UPDATE = 1
+	VERSION_UPDATE = 2
 	VERSION_PATCH  = 0
 )

@@ -40,21 +40,28 @@ func Persist(filePath string) {
 	}
 }
 
-func Unpersist() {
+func Unpersist() bool { // did it have any errors?
+	var errored bool
+
 	err := RemoveFromRegistry()
 	if err != nil {
+		errored = true
 		core.LogWarning("[Unpersist] failed to remove from reg - %v", err)
 	}
 
 	err = RemoveFromScheduler()
 	if err != nil {
+		errored = true
 		core.LogWarning("[Unpersist] failed to remove from scheduler - %v", err)
 	}
 
 	err = RemoveFromStartupFolder()
 	if err != nil {
+		errored = true
 		core.LogWarning("[Unpersist] failed to remove from startup folder - %v", err)
 	}
+
+	return errored
 }
 
 func getPersistenceName(nameCode uint8) string { // todo, add random persistence name

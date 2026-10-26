@@ -1,4 +1,4 @@
-package core
+package core_funcs
 
 import (
 	"crypto/sha256"

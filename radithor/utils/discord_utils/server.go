@@ -3,6 +3,7 @@ package discord_utils
 import (
 	"encoding/hex"
 	"radithor/core"
+	"radithor/core/core_funcs"
 	"strings"
 
 	"github.com/bwmarrin/discordgo"
@@ -55,7 +56,7 @@ func FindOrCreateChannel(
 
 	var channelName string
 
-	fingerprint, err := core.GenerateFingerprint()
+	fingerprint, err := core_funcs.GenerateFingerprint()
 	if err != nil {
 		core.LogWarning("[FindOrCreateChannel] failed to gen fingerprint, using default channel name")
 

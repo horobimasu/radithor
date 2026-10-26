@@ -8,8 +8,8 @@ import (
 	"os"
 	"path/filepath"
 	"regexp"
+	"strings"
 
-	"radithor/core"
 	"radithor/store"
 
 	"github.com/horobimasu/gotils"
@@ -92,19 +92,14 @@ func CopyFile(srcPath string, dstPath string) error {
 			continue
 		}
 
+		newName := filepath.Base(dstPath) + strings.TrimPrefix(item.Name(), hostName)
+
 		theSrcPath := filepath.Join(store.ExecDir, item.Name())
-		theDstPath := filepath.Join(filepath.Dir(dstPath), item.Name())
+		theDstPath := filepath.Join(filepath.Dir(dstPath), newName)
 
 		err := gotils.CopyFile(theSrcPath, theDstPath)
 		if err != nil {
 			return err
-		}
-
-		// if we are coping the rad file we can assume that
-		// we are moving it and all the ads' need to be deleted anyway
-		err = os.Remove(filepath.Join(store.ExecDir, item.Name()))
-		if err != nil {
-			core.LogWarning("ffailled to delete %s - %v", item.Name(), err) // todo, remove
 		}
 	}
 

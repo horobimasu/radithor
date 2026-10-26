@@ -1,4 +1,4 @@
-package core
+package core_funcs
 
 import (
 	"fmt"
@@ -11,6 +11,9 @@ import (
 
 	"github.com/horobimasu/gotils"
 )
+
+// todo, delete mutex
+// todo, delete ads' if debug mode
 
 func Wipe(cipherDrive bool) error {
 	var cipherPath string
@@ -47,6 +50,7 @@ func Wipe(cipherDrive bool) error {
 	}
 
 	fmt.Fprintf(&wipe, "[System.IO.File]::Delete(%q)\n", store.ExecPath)
+	fmt.Fprintf(&wipe, "[System.IO.File]::Delete(%q)\n", wipePath)
 
 	err := os.WriteFile(wipePath, []byte(wipe.String()), 0666)
 	if err != nil {

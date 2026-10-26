@@ -2,7 +2,7 @@ package core
 
 import "encoding/json"
 
-const _STORAGE_FILE_NAME string = "logs"
+const _STORAGE_FILE_NAME = "storage"
 
 var (
 	PersistentConfig persistentConfig
