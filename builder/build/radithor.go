@@ -91,13 +91,13 @@ func GenerateRadithorBuild(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	savedDiskFilesEncryptionKey, err := utils.GenerateRandomBytes(32)
+	savedDiskFilesEncryptionKey, err := shared.GenerateRandomBytes(32)
 	if err != nil {
 		http.Error(w, fmt.Sprintf("failed to generate encryption key for radithor disk files - %v", err), http.StatusBadRequest)
 		return
 	}
 
-	mutexName, err := utils.GenerateRandomString(14)
+	mutexName, err := shared.GenerateRandomString(14)
 	if err != nil {
 		http.Error(w, fmt.Sprintf("failed to generate radithor mutex name - %v", err), http.StatusBadRequest)
 		return
@@ -125,7 +125,7 @@ func GenerateRadithorBuild(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	configEncryptionKey, err := utils.GenerateRandomBytes(32)
+	configEncryptionKey, err := shared.GenerateRandomBytes(32)
 	if err != nil {
 		http.Error(w, fmt.Sprintf("failed to generate encryption key for config - %v", err), http.StatusBadRequest)
 		return
