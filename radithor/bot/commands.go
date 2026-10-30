@@ -19,7 +19,9 @@ func RegisterCommands() {
 		commands_this.NewThisCommand(),
 
 		&commands.PingCommand{},
+		&commands.NotifCommand{},
 		&commands.ScreenshotCommand{},
+		&commands.NotifExCommand{},
 	}
 
 	for _, cmd := range cmds {

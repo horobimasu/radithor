@@ -14,7 +14,7 @@ func ExitFatalOnDebugMode(reason string) {
 	}
 
 	windows.MessageBox(
-		windows.HWND(uintptr(0)),
+		windows.HWND(0),
 		windows.StringToUTF16Ptr(reason),
 		windows.StringToUTF16Ptr("radithor debug mode [fatal error]"),
 		windows.MB_OK|windows.MB_ICONERROR,

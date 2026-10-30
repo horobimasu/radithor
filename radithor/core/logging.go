@@ -12,6 +12,8 @@ import (
 	"github.com/horobimasu/gotils"
 )
 
+// todo, find way to remove ExitFatalOnDebugMode
+
 const _LOGS_FILE_NAME = "logs"
 
 var (
@@ -103,9 +105,11 @@ func sanitizeLogText(text string) string {
 	if store.SHORTEN_USERPROFILE_PATHS_IN_LOGS {
 		if userprofilePath == "" {
 			userprofilePath = os.Getenv("USERPROFILE")
+			userprofilePath = strings.ToLower(userprofilePath)
 		}
 
 		if userprofilePath != "" {
+			text = strings.ToLower(text)
 			text = strings.ReplaceAll(text, userprofilePath, "~")
 		}
 	}

@@ -10,7 +10,7 @@ require github.com/horobimasu/gotils v0.0.0-20261009122752-1a78f85ce208
 
 require (
 	github.com/bwmarrin/discordgo v0.29.0
-	github.com/horobimasu/windowsx v0.0.0-20261017091157-0ca212c235a1
+	github.com/horobimasu/windowsx v0.0.0-20261029031530-b71ec2c0dfab
 	github.com/kbinani/screenshot v0.0.0-20250624051815-089614a94018
 )
 

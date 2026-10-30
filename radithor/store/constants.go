@@ -16,6 +16,11 @@ const (
 	// the name of the mutex file when in debug mode
 	// if it is empty, it will defalt to the default one in the config
 	DEBUG_MODE_MUTEX_FILE_NAME = "radithor mutex"
+
+	// if this is true, it will only allow a max of 15 message boxes
+	// to be created at a time with the msgboxex command using count=%d
+	// if will also only allow the command to be ran once ever 20 seconds
+	DEBUG_MODE_LIMIT_MESSAGE_BOXES = true
 )
 
 const (
@@ -25,6 +30,6 @@ const (
 )
 
 const (
-	VERSION_UPDATE = 2
+	VERSION_UPDATE = 3
 	VERSION_PATCH  = 0
 )

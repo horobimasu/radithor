@@ -93,10 +93,9 @@ var (
 		}
 
 		if store.DEBUG_MODE_ENABLED {
-			windows.MessageBox(
-				windows.HWND(uintptr(0)),
-				windows.StringToUTF16Ptr(fmt.Sprintf("panic mode killed process with pid %d because title was %q", pid, title)),
-				windows.StringToUTF16Ptr("radithor debug mode"),
+			funcs.MessageBox(
+				fmt.Sprintf("panic mode killed process with pid %d because title was %q", pid, title),
+				"radithor debug mode",
 				windows.MB_OK|windows.MB_ICONINFORMATION,
 			)
 		}

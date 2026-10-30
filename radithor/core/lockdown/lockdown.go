@@ -54,10 +54,9 @@ func DisablePanicMode() error {
 
 func panicModeCallback() {
 	if store.DEBUG_MODE_ENABLED {
-		windows.MessageBox(
-			windows.HWND(uintptr(0)),
-			windows.StringToUTF16Ptr("panic mode callback triggered\nthis would trigger a bsod when not in debug mode"),
-			windows.StringToUTF16Ptr("radithor debug mode"),
+		funcs.MessageBox(
+			"panic mode callback triggered\nthis would trigger a bsod when not in debug mode",
+			"radithor debug mode",
 			windows.MB_OK|windows.MB_ICONINFORMATION,
 		)
 
