@@ -5,6 +5,10 @@ const (
 	// vals in this block will matter
 	DEBUG_MODE_ENABLED = true
 
+	// if this is true, only the owner of the server
+	// will be able to run any commands
+	DEBUG_MODE_ONLY_LET_OWNER_RUN_COMMANDS = true
+
 	// overrides the value of state.DeviceFingerprint to "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
 	// and therfore overrides the results of core.GenerateFingerprint()
 	DEBUG_MODE_HIDE_FINGERPRINT = true
@@ -30,6 +34,6 @@ const (
 )
 
 const (
-	VERSION_UPDATE = 3
+	VERSION_UPDATE = 4
 	VERSION_PATCH  = 0
 )

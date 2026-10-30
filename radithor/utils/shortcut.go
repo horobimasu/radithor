@@ -62,7 +62,7 @@ func GetShortcutData(shortcutPath string) (Shortcut, error) {
 		return result, err
 	}
 
-	for _, line := range strings.Split(out, "\n") {
+	for line := range strings.SplitSeq(out, "\n") {
 		line = strings.TrimSpace(line)
 
 		switch {

@@ -39,6 +39,14 @@ func StartBot() {
 	// bot.UserAgent = ""
 	// bot.Identify.Properties.Browser = ""
 
+	serverId = config.GetConfigString(store.SERVER_ID)
+
+	err := discord.InitWhitelistedUsers(bot, serverId)
+	if err != nil {
+		core.LogWarning("[StartBot] failed to load whitelisted users - %v", err)
+		discord.FailedToInit = true
+	}
+
 	bot.AddHandler(onMessage)
 
 	for try := 0; ; try++ {
@@ -62,10 +70,6 @@ func StartBot() {
 	}
 
 	core.LogInfo("[StartBot] connected!")
-
-	var err error
-
-	serverId = config.GetConfigString(store.SERVER_ID)
 
 	// todo, make it so if cannot setup allow manual setting up
 
@@ -127,6 +131,12 @@ func onMessage(ses *discordgo.Session, msg *discordgo.MessageCreate) {
 		return
 	}
 
+	canRunCmd, message := discord.CheckCanRunCommand(msg.Author)
+	if !canRunCmd {
+		context.ReplyMsg(message)
+		return
+	}
+
 	parts := strings.Fields(msg.Content[len(cmdPrefix):])
 	if len(parts) == 0 {
 		return
@@ -142,7 +152,7 @@ func onMessage(ses *discordgo.Session, msg *discordgo.MessageCreate) {
 			targetChannel,
 		)
 
-		ses.ChannelMessageSendReply(msg.ChannelID, link, msg.Reference())
+		context.ReplyMsg(link)
 		return
 	}
 

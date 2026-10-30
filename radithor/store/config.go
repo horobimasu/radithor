@@ -2,31 +2,31 @@ package store
 
 const ( // LIVE_BUILDER_CONFIG_IDS
 	// bot
-	BOT_TOKEN      uint8 = 1 // todo
-	SERVER_ID      uint8 = 2 // todo
-	CATEGORY_ID    uint8 = 3 // todo
-	COMMAND_PREFIX uint8 = 4 // todo
-	TRACKING_ID    uint8 = 5 // todo
+	BOT_TOKEN      uint8 = 1
+	SERVER_ID      uint8 = 2
+	CATEGORY_ID    uint8 = 3
+	COMMAND_PREFIX uint8 = 4
+	TRACKING_ID    uint8 = 5
 
 	// setup
-	USE_CUSTOM_DIRECTORY         uint8 = 6  // todo
-	CUSTOM_DIRECTORY_PATH        uint8 = 7  // todo
-	RANDOMIZE_DIRECTORY          uint8 = 8  // todo
-	USE_CUSTOM_NAME              uint8 = 9  // todo
-	CUSTOM_NAME                  uint8 = 10 // todo
-	RANDOMIZE_NAME               uint8 = 11 // todo
-	USE_ALTERNATE_DATA_STREAM    uint8 = 12 // todo
-	CUSTOM_ALTERNATE_DATA_STREAM uint8 = 13 // todo
+	USE_CUSTOM_DIRECTORY         uint8 = 6
+	CUSTOM_DIRECTORY_PATH        uint8 = 7
+	RANDOMIZE_DIRECTORY          uint8 = 8
+	USE_CUSTOM_NAME              uint8 = 9
+	CUSTOM_NAME                  uint8 = 10
+	RANDOMIZE_NAME               uint8 = 11
+	USE_ALTERNATE_DATA_STREAM    uint8 = 12
+	CUSTOM_ALTERNATE_DATA_STREAM uint8 = 13
 
 	// options
-	REQUIRE_ADMIN          uint8 = 14 // todo
-	PROMPT_ADMIN           uint8 = 15 // todo
-	FORCE_ADMIN            uint8 = 16 // todo
-	CONTINUE_WITHOUT_ADMIN uint8 = 17 // todo
+	REQUIRE_ADMIN          uint8 = 14
+	PROMPT_ADMIN           uint8 = 15
+	FORCE_ADMIN            uint8 = 16
+	CONTINUE_WITHOUT_ADMIN uint8 = 17
 	PERIODIC_RELOCATION    uint8 = 18 // todo
 	RELOCATION_INTERVAL    uint8 = 19 // todo
 	RELOCATE_ON_DISCOVERY  uint8 = 20 // todo
-	INSTANT_PANIC_MODE     uint8 = 21 // todo
+	INSTANT_PANIC_MODE     uint8 = 21
 
 	// persistence
 	PERSISTENCE_NAME                      uint8 = 22
@@ -37,8 +37,8 @@ const ( // LIVE_BUILDER_CONFIG_IDS
 	STARTUP_FOLDER                        uint8 = 27
 
 	// advanced
-	WHITELISTED_OPERATOR_IDS          uint8 = 28 // todo
-	AGGRESSIVE_LAUNCH_CHECKS          uint8 = 29 // todo
+	WHITELISTED_OPERATOR_IDS          uint8 = 28
+	AGGRESSIVE_LAUNCH_CHECKS          uint8 = 29
 	INVOLVE_FINGERPRINT_IN_ENCRYPTION uint8 = 30 // todo
 
 	// builder generated
