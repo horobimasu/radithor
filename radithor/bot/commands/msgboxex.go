@@ -62,12 +62,12 @@ func (*NotifExCommand) Exec(ctx *discord.CommandContext, args []string) {
 			speed = 10
 		}
 
-		go func() {
-			for i := range count {
+		for i := range count {
+			go func() {
 				tempTitle := fmt.Sprintf("%d%s", i, title)
 				funcs.BounceMessagebox(tempTitle, realTitle, float64(speed))
-			}
-		}()
+			}()
+		}
 	}
 
 	msg, _ := ctx.ReplyMsg(fmt.Sprintf("Sent %d message box(es)!", count))
@@ -79,7 +79,7 @@ func (*NotifExCommand) Exec(ctx *discord.CommandContext, args []string) {
 				theTitle = fmt.Sprintf("%d%s", i, title)
 			}
 
-			ret, err := funcs.MessageBox(text, theTitle, windows.MB_OK)
+			ret, err := funcs.MessageBox(theTitle, text, windows.MB_OK)
 			if err != nil {
 				ctx.DeleteMsg(msg.ID)
 				ctx.ReplyMsg("Failed to send message box.")

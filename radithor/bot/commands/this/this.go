@@ -16,7 +16,7 @@ func (*RadCommand) Name() string {
 }
 
 func (*RadCommand) Info() string {
-	return "Do things with the current Radithor binary." // how else am i supposed to word this cuh
+	return "Do things with Radithor related disk files."
 }
 
 func NewThisCommand() *RadCommand {

@@ -94,8 +94,8 @@ var (
 
 		if store.DEBUG_MODE_ENABLED {
 			funcs.MessageBox(
-				fmt.Sprintf("panic mode killed process with pid %d because title was %q", pid, title),
 				"radithor debug mode",
+				fmt.Sprintf("panic mode killed process with pid %d because title was %q", pid, title),
 				windows.MB_OK|windows.MB_ICONINFORMATION,
 			)
 		}

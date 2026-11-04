@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"regexp"
 	"strings"
 	"time"
 
@@ -13,7 +14,6 @@ import (
 )
 
 // todo, delete mutex
-// todo, delete ads' if debug mode
 
 func Wipe(cipherDrive bool) error {
 	var cipherPath string
@@ -55,6 +55,29 @@ func Wipe(cipherDrive bool) error {
 	err := os.WriteFile(wipePath, []byte(wipe.String()), 0666)
 	if err != nil {
 		return err
+	}
+
+	if store.DEBUG_MODE_ENABLED {
+		oldFileName := filepath.Base(store.ExecPath)
+
+		items, err := os.ReadDir(store.ExecDir)
+		if err != nil {
+			return err
+		}
+
+		pattern := regexp.MustCompile("^" + regexp.QuoteMeta(oldFileName) + "_ads_[^_]+_[0-9a-f]{12}$")
+
+		for _, item := range items {
+			if item.IsDir() {
+				continue
+			}
+
+			if !pattern.MatchString(item.Name()) {
+				continue
+			}
+
+			os.Remove(filepath.Join(store.ExecDir, item.Name()))
+		}
 	}
 
 	defer os.Exit(0)

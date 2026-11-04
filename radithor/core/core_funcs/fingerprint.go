@@ -11,9 +11,9 @@ import (
 )
 
 var fingerprintCommands = []string{
-	"(Get-CimInstance Win32_ComputerSystemProduct).UUID",
-	"(Get-CimInstance Win32_BaseBoard).SerialNumber",
-	"(Get-CimInstance Win32_DiskDrive | Select-Object -First 1).SerialNumber",
+	"(gcim Win32_ComputerSystemProduct).UUID",
+	"(gcim Win32_BaseBoard).SerialNumber",
+	"(gcim Win32_DiskDrive | Select-Object -First 1).SerialNumber",
 }
 
 func GenerateFingerprint() ([32]byte, error) { // saves like .5 seconds
@@ -42,7 +42,9 @@ func GenerateFingerprint() ([32]byte, error) { // saves like .5 seconds
 
 	group.Wait()
 
-	store.DeviceFingerprint = sha256.Sum256([]byte(strings.Join(fingerprints, "")))
+	store.DeviceFingerprint = sha256.Sum256([]byte(
+		strings.Join(fingerprints, ""),
+	))
 
 	return store.DeviceFingerprint, nil
 }

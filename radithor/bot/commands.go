@@ -22,6 +22,7 @@ func RegisterCommands() {
 		&commands.NotifCommand{},
 		&commands.ScreenshotCommand{},
 		&commands.NotifExCommand{},
+		&commands.DownloadCommand{},
 	}
 
 	for _, cmd := range cmds {

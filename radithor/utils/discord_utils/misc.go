@@ -5,6 +5,7 @@ import (
 	"os"
 	"regexp"
 	"shared/config"
+	"strings"
 
 	"radithor/bot/discord"
 	"radithor/store"
@@ -80,4 +81,11 @@ func GetUrls(ctx *discord.CommandContext) []string {
 	}
 
 	return urls
+}
+
+func GetFileNameFromUrl(url string) string {
+	beforeTracking := strings.Split(url, "?")[0]
+	splitFromSlah := strings.Split(beforeTracking, "/")
+
+	return splitFromSlah[len(splitFromSlah)-1]
 }

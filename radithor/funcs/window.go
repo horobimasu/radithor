@@ -66,8 +66,8 @@ func BounceWindow(handle uintptr, speed float64) error {
 
 	rng := rand.New(rand.NewSource(time.Now().UnixNano()))
 
-	dirX := speed * rng.Float64()
-	dirY := speed * rng.Float64()
+	dirX := speed*rng.Float64() + float64(windows.GetCurrentThreadId())
+	dirY := speed*rng.Float64() + float64(windows.GetCurrentThreadId())
 
 	ticker := time.NewTicker(time.Duration(1000/_BOUNCE_FPS) * time.Millisecond)
 	defer ticker.Stop()

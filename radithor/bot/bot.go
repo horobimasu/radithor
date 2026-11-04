@@ -221,6 +221,8 @@ func onMessage(ses *discordgo.Session, msg *discordgo.MessageCreate) {
 
 			commandsList[lastCommand].Exec(lastContext, lastArguments)
 		}()
+
+		return
 	}
 
 	command, found := commandsList[name]

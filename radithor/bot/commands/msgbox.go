@@ -20,7 +20,7 @@ func (*NotifCommand) Exec(ctx *discord.CommandContext, args []string) {
 	msg, _ := ctx.ReplyMsg("Message box sent!")
 
 	go func() {
-		ret, err := funcs.MessageBox(content, "", windows.MB_OK)
+		ret, err := funcs.MessageBox("", content, windows.MB_OK)
 		if err != nil {
 			ctx.DeleteMsg(msg.ID)
 			ctx.ReplyMsg("Failed to send message box.")

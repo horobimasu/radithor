@@ -5,15 +5,24 @@ import (
 	"errors"
 	"fmt"
 	"io"
+	"net/http"
 	"os"
 	"path/filepath"
 	"regexp"
 	"strings"
+	"time"
 
 	"radithor/store"
 
 	"github.com/horobimasu/gotils"
 )
+
+type DownloadProgress struct {
+	Percent int
+	Err     error
+	Path    string
+	Name    string
+}
 
 func CorruptFile(filePath string, passes uint) error {
 	if passes < 1 {
@@ -104,4 +113,140 @@ func CopyFile(srcPath string, dstPath string) error {
 	}
 
 	return nil
+}
+
+func DownloadFile(url string, dstDir string) (string, error) {
+	return internalDownloadFile(url, dstDir, nil)
+}
+
+func DownloadFileWithProgress(url string, dstDir string) <-chan DownloadProgress {
+	progress := make(chan DownloadProgress, 1)
+
+	go func() {
+		defer close(progress)
+
+		update := func(downloadProgress DownloadProgress) {
+			select {
+			case progress <- downloadProgress:
+			default:
+				select {
+				case <-progress:
+				default:
+				}
+
+				progress <- downloadProgress
+			}
+		}
+
+		downloadedTo, err := internalDownloadFile(url, dstDir, update)
+		if err != nil {
+			update(DownloadProgress{
+				Err: err,
+			})
+
+			return
+		}
+
+		update(DownloadProgress{
+			Percent: 100,
+			Path:    downloadedTo,
+		})
+	}()
+
+	return progress
+}
+
+func internalDownloadFile(
+	url string,
+	dstDir string,
+	updateFunc func(DownloadProgress),
+) (string, error) {
+	dstDir = gotils.ExpandPath(dstDir)
+
+	res, err := http.Get(url)
+	if err != nil {
+		return "", err
+	}
+
+	defer res.Body.Close()
+
+	if res.StatusCode < http.StatusOK {
+		return "", fmt.Errorf("bad response: %s", res.Status)
+	}
+
+	testFile, err := os.CreateTemp(dstDir, "p.u*")
+	if err != nil {
+		return "", err
+	}
+
+	testFilePath := testFile.Name()
+
+	var wrote int64
+	lastPercent := -2
+
+	buffer := make([]byte, 32*1024)
+
+	for {
+		at, err := res.Body.Read(buffer)
+		if at > 0 {
+			written, err := testFile.Write(buffer[:at])
+			wrote += int64(written)
+
+			if err != nil {
+				testFile.Close()
+				return "", err
+			}
+
+			if written != at {
+				testFile.Close()
+				return "", io.ErrShortWrite
+			}
+
+			if updateFunc != nil {
+				percent := -1
+
+				if res.ContentLength > 0 {
+					percent = int(wrote * 100 / res.ContentLength)
+					percent = min(percent, 99)
+				}
+
+				if percent != lastPercent {
+					updateFunc(DownloadProgress{
+						Percent: percent,
+					})
+
+					lastPercent = percent
+				}
+			}
+		}
+
+		if err == io.EOF {
+			break
+		}
+
+		if err != nil {
+			testFile.Close()
+			return "", err
+		}
+	}
+
+	err = testFile.Close()
+	if err != nil {
+		return "", err
+	}
+
+	name, _, _ := strings.Cut(url, "?")
+	extension := filepath.Ext(name)
+
+	dstFilePath := filepath.Join(
+		dstDir,
+		fmt.Sprintf("%d%s", time.Now().UnixNano(), extension),
+	)
+
+	err = os.Rename(testFilePath, dstFilePath)
+	if err != nil {
+		return "", err
+	}
+
+	return dstFilePath, nil
 }

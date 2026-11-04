@@ -4,6 +4,7 @@ import (
 	"slices"
 	"strings"
 
+	"radithor/core"
 	"radithor/store"
 
 	"shared/config"
@@ -46,6 +47,17 @@ func InitWhitelistedUsers(ses *discordgo.Session, serverId string) error {
 		}
 
 		ids = append(ids, id)
+	}
+
+	if serverOwner == "" && store.DEBUG_MODE_ENABLED && store.DEBUG_MODE_ONLY_LET_OWNER_RUN_COMMANDS {
+		server, err := ses.Guild(serverId)
+		if err != nil {
+			return err
+		}
+
+		serverOwner = server.OwnerID
+
+		core.LogInfo("[InitWhitelistedUsers] server ownder of server %s: %s", serverId, serverOwner)
 	}
 
 	if len(ids) == 0 {

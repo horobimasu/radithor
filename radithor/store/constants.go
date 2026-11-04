@@ -10,7 +10,7 @@ const (
 	DEBUG_MODE_ONLY_LET_OWNER_RUN_COMMANDS = true
 
 	// overrides the value of state.DeviceFingerprint to "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
-	// and therfore overrides the results of core.GenerateFingerprint()
+	// and therfore overrides the results of core_funcs.GenerateFingerprint()
 	DEBUG_MODE_HIDE_FINGERPRINT = true
 
 	// the logs will also be written to this file after it is written to the main
@@ -34,6 +34,6 @@ const (
 )
 
 const (
-	VERSION_UPDATE = 4
+	VERSION_UPDATE = 5
 	VERSION_PATCH  = 0
 )
