@@ -13,4 +13,4 @@ export default {
 
     e2eePassword: null,
     savingDisabled: false
-}
+};
