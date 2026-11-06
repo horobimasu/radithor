@@ -3,7 +3,7 @@ package commands
 import "radithor/bot/discord"
 
 func (*PingCommand) Exec(ctx *discord.CommandContext, args []string) {
-	ctx.ReplyMsg("pong")
+	ctx.ReplyMsg("Pong.")
 }
 
 func (*PingCommand) Name() string {

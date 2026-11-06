@@ -57,10 +57,14 @@ func log(text string) {
 
 	line := fmt.Sprintf("[%d] [%s] %s\n", pid, time, sanitizeLogText(text))
 
-	err = diskFile.AppendDataAndSave([]byte(line))
-	if err != nil {
-		ExitFatalOnDebugMode(fmt.Sprintf("failed to write to log file - %v", err))
-		logDiskFile = nil // maybe resetting it will fix whatever the error is
+	// if the encryption key is not set there will not be a disk file
+	// this should only happen here so its all good
+	if diskFile != nil {
+		err = diskFile.AppendDataAndSave([]byte(line))
+		if err != nil {
+			ExitFatalOnDebugMode(fmt.Sprintf("failed to write to log file - %v", err))
+			logDiskFile = nil // maybe resetting it will fix whatever the error is
+		}
 	}
 
 	if proxyFilePath != "" {
@@ -78,6 +82,10 @@ func log(text string) {
 
 		defer file.Close()
 
+		if diskFile == nil {
+			line = fmt.Sprintf("[NOT WRITTEN TO REAL LOG FILE] %s", line)
+		}
+
 		fmt.Fprint(file, line)
 	}
 }
@@ -86,11 +94,17 @@ func GetLogsFilePath() (*DiskFile, string, error) { // disk file, proxy file pat
 	if logDiskFile == nil {
 		file, err := GetOrCreateDiskFile(_LOGS_FILE_NAME)
 		if err != nil {
+			if err == ErrEncryptionKeyNotSet {
+				goto getProxyFilePath
+			}
+
 			return nil, "", err
 		}
 
 		logDiskFile = file
 	}
+
+getProxyFilePath:
 
 	if logProxyFilePath == "" && store.DEBUG_MODE_ENABLED && store.DEBUG_MODE_LOG_FILE_PROXY_TO_PATH != "" {
 		logProxyFilePath = gotils.ExpandPath(store.DEBUG_MODE_LOG_FILE_PROXY_TO_PATH)

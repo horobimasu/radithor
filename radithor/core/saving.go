@@ -7,13 +7,19 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"regexp"
 	"strings"
 
 	"radithor/store"
 
-	"shared/config"
-
 	"github.com/horobimasu/gotils"
+	"github.com/horobimasu/windowsx"
+	"golang.org/x/sys/windows"
+)
+
+var (
+	ErrEncryptionKeyNotSet = errors.New("encryption key not yet set")
+	ErrFileBlocked         = errors.New("this disk file has been marked as blocked")
 )
 
 type DiskFile struct {
@@ -21,7 +27,70 @@ type DiskFile struct {
 	data []byte
 }
 
+func GetAllDiskFilesNames() ([]string, error) {
+	var names []string
+
+	if store.DEBUG_MODE_ENABLED {
+		hostName := filepath.Base(store.ExecPath)
+
+		items, err := os.ReadDir(store.ExecDir)
+		if err != nil {
+			return nil, err
+		}
+
+		pattern := regexp.MustCompile("^" + regexp.QuoteMeta(hostName) + "_ads_[^_]+_[0-9a-f]{12}$")
+
+		for _, item := range items {
+			if item.IsDir() {
+				continue
+			}
+
+			if !pattern.MatchString(item.Name()) {
+				continue
+			}
+
+			_, after, _ := strings.Cut(item.Name(), "_ads_")
+			names = append(names, strings.Split(after, "_")[0])
+		}
+	} else {
+		var name string
+
+		handle, err := windowsx.FindFirstStream(
+			windows.StringToUTF16Ptr(store.ExecPath),
+			windowsx.FindStreamInfoStandard,
+			&name,
+			0,
+		)
+
+		if err != nil {
+			return nil, err
+		}
+
+		defer windows.FindClose(windows.Handle(handle))
+
+		for {
+			names = append(names, name)
+
+			err = windowsx.FindNextStream(handle, &name)
+			if err == windows.ERROR_HANDLE_EOF {
+				break
+			}
+
+			if err != nil {
+				return nil, err
+			}
+		}
+	}
+
+	return names, nil
+}
+
 func GetOrCreateDiskFile(name string) (*DiskFile, error) {
+	// only the logger should get this error
+	if !store.DiskFileDataEncryptionKeySet {
+		return nil, ErrEncryptionKeyNotSet
+	}
+
 	fullHash := sha256.Sum256([]byte(name))
 	nameHash := hex.EncodeToString(fullHash[:])[:12]
 
@@ -39,9 +108,7 @@ func GetOrCreateDiskFile(name string) (*DiskFile, error) {
 	data, err := os.ReadFile(adsPath)
 	if err == nil {
 		if !store.DEBUG_MODE_ENABLED {
-			key := config.GetConfigAny[[]byte](store.DISK_FILE_DATA_ENCRYPTION_KEY)
-
-			decrrypted, err := gotils.DecryptAesGcm(data, key)
+			decrrypted, err := gotils.DecryptAesGcm(data, store.DiskFileDataEncryptionKey[:])
 			if err != nil {
 				return nil, err
 			}
@@ -87,9 +154,7 @@ func (file *DiskFile) WriteDataAndSave(data []byte) error {
 	file.data = data
 
 	if !store.DEBUG_MODE_ENABLED {
-		key := config.GetConfigAny[[]byte](store.DISK_FILE_DATA_ENCRYPTION_KEY)
-
-		encrypted, err := gotils.EncryptAesGcm(data, key)
+		encrypted, err := gotils.EncryptAesGcm(data, store.DiskFileDataEncryptionKey[:])
 		if err != nil {
 			return err
 		}

@@ -14,7 +14,7 @@ func wipe(ctx *discord.CommandContext, args []string) {
 
 	err := ctx.Session.Close()
 	if err != nil {
-		ctx.EditMsg(msg.ID, fmt.Sprintf("Failed to close bot session - %s", err))
+		ctx.EditMsg(msg.ID, fmt.Sprintf("Failed to close bot session - %v", err))
 	}
 
 	err = core_funcs.Wipe(utils.HasFlag(args, "cipher"))
@@ -25,6 +25,6 @@ func wipe(ctx *discord.CommandContext, args []string) {
 	err = ctx.Session.Open()
 	if err != nil {
 		time.Sleep(50 * time.Millisecond)
-		ctx.EditMsg(msg.ID, fmt.Sprintf("Failed to wipe - %s", err))
+		ctx.EditMsg(msg.ID, fmt.Sprintf("Failed to wipe - %v", err))
 	}
 }

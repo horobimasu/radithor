@@ -24,7 +24,7 @@ func AddToScheduler(filePath string) error {
 	if err == nil {
 		defer os.Remove(xmlPath)
 
-		err := gotils.RunCommand(
+		err := gotils.RunProgram(
 			"schtasks", "/create",
 			"/tn", getPersistenceName(_PERSISTENCE_NAME_SCHEDULER),
 			"/xml", xmlPath,
@@ -40,7 +40,7 @@ func AddToScheduler(filePath string) error {
 			filePath,
 		)
 
-		err := gotils.RunCommand(
+		err := gotils.RunProgram(
 			"schtasks", "/create",
 			"/tn", getPersistenceName(_PERSISTENCE_NAME_SCHEDULER),
 			"/tr", command,
@@ -58,7 +58,7 @@ func AddToScheduler(filePath string) error {
 }
 
 func RemoveFromScheduler() error {
-	return gotils.RunCommand(
+	return gotils.RunProgram(
 		"schtasks", "/delete",
 		"/tn", getPersistenceName(_PERSISTENCE_NAME_SCHEDULER),
 		"/f",

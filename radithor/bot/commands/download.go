@@ -23,18 +23,18 @@ func (*DownloadCommand) Exec(ctx *discord.CommandContext, args []string) {
 	dstDir := utils.UnwrapQuotes(args)
 	if dstDir == "" {
 		dstDir = os.TempDir()
-		downloadToMsg, _ = ctx.ReplyMsg(fmt.Sprintf("No directory provided, downloading to: `%s`", dstDir))
+		downloadToMsg, _ = ctx.ReplyMsg(fmt.Sprintf("No directory provided, downloading to: `%s`.", dstDir))
 	} else {
 		info, err := os.Stat(dstDir)
 		if err != nil {
 			ctx.DeleteMsg(downloadToMsg.ID)
-			ctx.ReplyMsg(fmt.Sprintf("Failed to get info on `%s` - %s", dstDir, err))
+			ctx.ReplyMsg(fmt.Sprintf("Failed to get info on `%s` - %v", dstDir, err))
 			return
 		}
 
 		if !info.IsDir() {
 			ctx.DeleteMsg(downloadToMsg.ID)
-			ctx.ReplyMsg(fmt.Sprintf("Path `%s` is not a directory", dstDir))
+			ctx.ReplyMsg(fmt.Sprintf("Path `%s` is not a directory.", dstDir))
 			return
 		}
 	}
@@ -70,11 +70,11 @@ func (*DownloadCommand) Exec(ctx *discord.CommandContext, args []string) {
 		}
 
 		if err != nil {
-			ctx.ReplyMsg(fmt.Sprintf("Failed to download `%s` - %s", fileName, err))
+			ctx.ReplyMsg(fmt.Sprintf("Failed to download `%s` - %v", fileName, err))
 			continue
 		}
 
-		ctx.ReplyMsg(fmt.Sprintf("Downloaded `%s` to: `%s`", fileName, path))
+		ctx.ReplyMsg(fmt.Sprintf("Downloaded `%s` to: `%s`.", fileName, path))
 	}
 
 	ctx.DeleteMsg(downloadToMsg.ID)

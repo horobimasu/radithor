@@ -9,10 +9,8 @@ import (
 	"github.com/bwmarrin/discordgo"
 )
 
-const ( // these dont mean anything if anyone is wondering
-	_DEFAULT_CATEGORY_NAME string = "string2"
-	_DEFAULT_CHANNEL_NAME  string = "nofina9"
-)
+// this dosnt mean anything if anyone is wondering
+const _DEFAULT_CATEGORY_NAME string = "strini6"
 
 func FindOrCreateFallbackCategory(ses *discordgo.Session, serverId string) (string, error) {
 	channels, err := ses.GuildChannels(serverId)
@@ -54,16 +52,8 @@ func FindOrCreateChannel(
 		return "", false, err
 	}
 
-	var channelName string
-
-	fingerprint, err := core_funcs.GenerateFingerprint()
-	if err != nil {
-		core.LogWarning("[FindOrCreateChannel] failed to gen fingerprint, using default channel name")
-
-		channelName = _DEFAULT_CHANNEL_NAME
-	} else {
-		channelName = hex.EncodeToString(fingerprint[:])
-	}
+	fingerprint := core_funcs.GenerateFingerprint()
+	channelName := hex.EncodeToString(fingerprint[:])
 
 	for _, channel := range channels {
 		if channel.Topic != channelName {

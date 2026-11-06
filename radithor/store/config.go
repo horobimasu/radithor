@@ -42,6 +42,5 @@ const ( // LIVE_BUILDER_CONFIG_IDS
 	INVOLVE_FINGERPRINT_IN_ENCRYPTION uint8 = 30 // todo
 
 	// builder generated
-	DISK_FILE_DATA_ENCRYPTION_KEY uint8 = 31
-	MUTEX_NAME                    uint8 = 32
+	MUTEX_NAME uint8 = 31
 )

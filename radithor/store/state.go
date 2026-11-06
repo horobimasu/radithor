@@ -15,16 +15,20 @@ var (
 	ExecDir string
 
 	InPanicMode bool
+
+	DiskFileDataEncryptionKeySet bool
 )
 
 // the things that cannot be set with state.InitState()
 var (
 	// technically this can be set but only in debug mode tho
 	// so it gets a pass
+	//
+	// set in /core/core_funcs.GenerateFingerprint
 	DeviceFingerprint [32]byte
 
-	// set in /main.go
-	DiskFileDataEncryptionKey []byte
+	// set in /main.initConfig
+	DiskFileDataEncryptionKey [32]byte
 )
 
 func InitState() {
@@ -41,4 +45,6 @@ func InitState() {
 	}
 
 	InPanicMode = false
+
+	DiskFileDataEncryptionKeySet = false
 }

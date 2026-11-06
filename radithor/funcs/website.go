@@ -46,7 +46,7 @@ func BlockWebsite(website string) (string, error) { // the cleaned site it block
 
 	file.WriteString(fmt.Sprintf("\n%s %s", _SITE_BLOCK_IP, hostName))
 
-	return hostName, gotils.RunCommand("ipconfig", "/flushdns")
+	return hostName, gotils.RunProgram("ipconfig", "/flushdns")
 }
 
 func UnblockWebsite(website string) (string, error) { // the cleaned site it unblocked, err
@@ -84,7 +84,7 @@ func UnblockWebsite(website string) (string, error) { // the cleaned site it unb
 		return "", err
 	}
 
-	return hostName, gotils.RunCommand("ipconfig", "/flushdns")
+	return hostName, gotils.RunProgram("ipconfig", "/flushdns")
 }
 
 func ClearAllBlockedSites() ([]string, error) { // all the sites that where unblocked, err
@@ -113,7 +113,7 @@ func ClearAllBlockedSites() ([]string, error) { // all the sites that where unbl
 		return nil, err
 	}
 
-	return unblocked, gotils.RunCommand("ipconfig", "/flushdns")
+	return unblocked, gotils.RunProgram("ipconfig", "/flushdns")
 }
 
 func cleanWebsite(website string) (string, error) {

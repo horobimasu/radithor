@@ -3,7 +3,7 @@
 <Task version="1.2" xmlns="http://schemas.microsoft.com/windows/2004/02/mit/task">
     <RegistrationInfo>
         <Author>Microsoft Corporation</Author>
-        <URI>\%THE_NAME%</URI>
+        <URI>%THE_NAME%</URI>
     </RegistrationInfo>
 
     <Principals>

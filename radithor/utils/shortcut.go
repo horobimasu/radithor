@@ -35,7 +35,7 @@ func CreateShortcut(shortcutData Shortcut) error {
 	fmt.Fprintf(&command, "$i.WindowStyle = %d\n", shortcutData.Style)
 	command.WriteString("$i.Save()")
 
-	return gotils.RunCommand("powershell", "-nop", "-ep", "bypass", "-c", command.String())
+	return gotils.RunProgram("powershell", "-nop", "-ep", "bypass", "-c", command.String())
 }
 
 func GetShortcutData(shortcutPath string) (Shortcut, error) {
@@ -57,7 +57,7 @@ func GetShortcutData(shortcutPath string) (Shortcut, error) {
 	fmt.Fprintf(&command, "Write-Host \"7,\" $c.HotKey\n")
 	fmt.Fprintf(&command, "Write-Host \"9,\" $c.WindowStyle\n")
 
-	out, err := gotils.GetCommandOutput("powershell", "-nop", "-ep", "bypass", "-c", command.String())
+	out, err := gotils.GetProgramOutput("powershell", "-nop", "-ep", "bypass", "-c", command.String())
 	if err != nil {
 		return result, err
 	}

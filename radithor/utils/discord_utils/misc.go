@@ -22,7 +22,7 @@ func GetConnectionMsg(new bool) string {
 
 	message := "This device has reconnected."
 	if new {
-		message = "A new device has been connected."
+		message = "A new device has connected."
 	}
 
 	var trackingId string

@@ -63,9 +63,10 @@ func main() {
 
 		if savedState.InitDone {
 			start(savedState)
-		} else {
-			setup(savedState)
+			return
 		}
+
+		setup(savedState)
 
 	case 3: // exec path + old rad file path + initial rad pid
 		firstStart(argv)
@@ -160,13 +161,7 @@ func setup(savedState patch.SavedState) {
 	savedState.InitDone = true
 
 	if config.GetConfigAny[bool](store.AGGRESSIVE_LAUNCH_CHECKS) {
-		fingerprint, err := core_funcs.GenerateFingerprint()
-		if err != nil {
-			core.LogError("[setup] failed to generate fingerprint - %v", err)
-			os.Exit(0)
-		}
-
-		savedState.DeviceFingerprint = fingerprint
+		savedState.DeviceFingerprint = core_funcs.GenerateFingerprint()
 	}
 
 	newSavedState, err := utils.Serialize(savedState)
@@ -195,7 +190,7 @@ func setup(savedState patch.SavedState) {
 		os.Getpid(),
 	)
 
-	gotils.RunCommand(newInstallPath, store.ExecPath, strconv.Itoa(os.Getpid()))
+	gotils.RunProgram(newInstallPath, store.ExecPath, strconv.Itoa(os.Getpid()))
 }
 
 func start(savedState patch.SavedState) {
@@ -314,17 +309,11 @@ func firstStart(argv []string) {
 }
 
 func checkCanLaunch(savedState patch.SavedState) bool {
-	fingerprint, err := core_funcs.GenerateFingerprint()
-	if err != nil {
-		core.LogError("[checkCanLaunch] failed to generate fingerprint - %v", err)
-		return false
-	}
-
-	return fingerprint == savedState.DeviceFingerprint
+	return core_funcs.GenerateFingerprint() == savedState.DeviceFingerprint
 }
 
 func initConfig() error {
-	configData, err := utils.Deserialize[patch.EncryptedConfigData](patch.RawEncryptedConfigData)
+	encryptionKeys, err := utils.Deserialize[patch.EncryptionKeys](patch.RawEncryptionKeys)
 	if err != nil {
 		return err
 	}
@@ -332,7 +321,7 @@ func initConfig() error {
 	decryptedRawConfigData, err := config.GetAndDecryptConfig(
 		store.ExecPath,
 		shared.RADITHOR_CONFIG_PE_SECTION_NAME,
-		configData.EncryptionKey[:],
+		encryptionKeys.ConfigKey[:],
 	)
 
 	if err != nil {
@@ -340,6 +329,9 @@ func initConfig() error {
 	}
 
 	config.RegisterConfig(decryptedRawConfigData)
+
+	store.DiskFileDataEncryptionKey = encryptionKeys.DiskFilesKey
+	store.DiskFileDataEncryptionKeySet = true
 
 	return nil
 }

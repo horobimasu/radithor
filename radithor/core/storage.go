@@ -2,7 +2,7 @@ package core
 
 import "encoding/json"
 
-const _STORAGE_FILE_NAME = "storage"
+const STORAGE_FILE_NAME = "storage"
 
 var (
 	PersistentConfig persistentConfig
@@ -28,7 +28,7 @@ func LoadPersistentConfig() error {
 		return nil
 	}
 
-	file, err := GetOrCreateDiskFile(_STORAGE_FILE_NAME)
+	file, err := GetOrCreateDiskFile(STORAGE_FILE_NAME)
 	if err != nil {
 		return err
 	}
@@ -50,7 +50,7 @@ func LoadPersistentConfig() error {
 }
 
 func SavePersistenConfig() error {
-	file, err := GetOrCreateDiskFile(_STORAGE_FILE_NAME)
+	file, err := GetOrCreateDiskFile(STORAGE_FILE_NAME)
 	if err != nil {
 		return err
 	}

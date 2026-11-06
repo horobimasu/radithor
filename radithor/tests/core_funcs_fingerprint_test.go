@@ -7,10 +7,11 @@ import (
 )
 
 func TestGenFingerprint(t *testing.T) {
-	fingerprint, err := core_funcs.GenerateFingerprint()
-	if err != nil {
-		t.Fatalf("failed to generate fingerprint - %v", err)
-	}
+	t.Logf("fingerprint: %x", core_funcs.GenerateFingerprint())
+}
 
-	t.Logf("fingerprint: %x", fingerprint)
+func TestGenUnhashedFingerprint(t *testing.T) {
+	for name, value := range core_funcs.GetUnhashedFingerprint() {
+		t.Logf("%s: %s", name, value)
+	}
 }

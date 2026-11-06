@@ -6,11 +6,10 @@ require golang.org/x/sys v0.49.0
 
 require shared v0.0.0
 
-require github.com/horobimasu/gotils v0.0.0-20261009122752-1a78f85ce208
-
 require (
 	github.com/bwmarrin/discordgo v0.29.0
-	github.com/horobimasu/windowsx v0.0.0-20261029031530-b71ec2c0dfab
+	github.com/horobimasu/gotils v0.0.0-20261105082854-8b644c43d041
+	github.com/horobimasu/windowsx v0.0.0-20261105100023-f0adee52dc0e
 	github.com/kbinani/screenshot v0.0.0-20250624051815-089614a94018
 )
 

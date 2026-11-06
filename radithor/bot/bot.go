@@ -55,15 +55,17 @@ func StartBot() {
 			break
 		}
 
-		toWait := 30 * time.Second
+		toWait := 2 * time.Hour
 
 		switch {
+		case try < 5:
+			toWait = 35 * time.Second
 		case try < 25:
-			toWait = 2 * time.Minute
+			toWait = 5 * time.Minute
 		case try < 55:
-			toWait = 35 * time.Minute
-		case try < 130:
-			toWait = 2 * time.Hour
+			toWait = 15 * time.Minute
+		case try < 100:
+			toWait = 45 * time.Minute
 		}
 
 		time.Sleep(toWait)

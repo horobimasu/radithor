@@ -11,6 +11,8 @@ const (
 
 	// overrides the value of state.DeviceFingerprint to "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
 	// and therfore overrides the results of core_funcs.GenerateFingerprint()
+	//
+	// this will also return zeroed values for core_funcs.GetUnhashedFingerprint()
 	DEBUG_MODE_HIDE_FINGERPRINT = true
 
 	// the logs will also be written to this file after it is written to the main
@@ -19,7 +21,7 @@ const (
 
 	// the name of the mutex file when in debug mode
 	// if it is empty, it will defalt to the default one in the config
-	DEBUG_MODE_MUTEX_FILE_NAME = "radithor mutex"
+	DEBUG_MODE_MUTEX_FILE_NAME = "radithor mutex.tmp"
 
 	// if this is true, it will only allow a max of 15 message boxes
 	// to be created at a time with the msgboxex command using count=%d
@@ -34,6 +36,6 @@ const (
 )
 
 const (
-	VERSION_UPDATE = 5
+	VERSION_UPDATE = 6
 	VERSION_PATCH  = 0
 )

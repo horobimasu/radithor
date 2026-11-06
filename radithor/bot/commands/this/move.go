@@ -26,7 +26,7 @@ func move(ctx *discord.CommandContext, args []string) {
 	err := core_funcs.Relocate(newPath, &relocatedTo, triggerRelocation)
 	if err != nil {
 		ctx.DeleteMsg(msg.ID)
-		ctx.ReplyMsg(fmt.Sprintf("Failed to relocate - %s", err))
+		ctx.ReplyMsg(fmt.Sprintf("Failed to relocate - %v", err))
 		return
 	}
 

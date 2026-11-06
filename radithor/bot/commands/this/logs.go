@@ -14,7 +14,7 @@ import (
 func logs(ctx *discord.CommandContext, args []string) {
 	file, _, err := core.GetLogsFilePath()
 	if err != nil {
-		ctx.ReplyMsg(fmt.Sprintf("Failed to get the logs file - %s", err))
+		ctx.ReplyMsg(fmt.Sprintf("Failed to get the logs file - %v", err))
 		return
 	}
 

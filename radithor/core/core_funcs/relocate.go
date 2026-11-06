@@ -64,7 +64,7 @@ func Relocate(path string, relocatedTo *string, triggerRelocation <-chan struct{
 			os.Getpid(),
 		)
 
-		gotils.RunCommand(newPath, store.ExecPath, strconv.Itoa(os.Getpid()))
+		gotils.RunProgram(newPath, store.ExecPath, strconv.Itoa(os.Getpid()))
 	}()
 
 	return nil
