@@ -28,6 +28,17 @@ func WriteToBuildsDir(name string, data []byte) (string, error) { // where it wr
 		return "", err
 	}
 
+	if store.DEBUG {
+		writeTo := filepath.Join(buildsDir, name)
+
+		err = os.WriteFile(writeTo, data, 0666)
+		if err != nil {
+			return "", err
+		}
+
+		return writeTo, nil
+	}
+
 	items, err := os.ReadDir(buildsDir)
 	if err != nil {
 		return "", err

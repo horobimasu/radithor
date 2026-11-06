@@ -7,6 +7,6 @@ const (
 )
 
 const (
-	SERVER_VERSION = "2.0"
-	SITE_VERSION   = "1.0"
+	SERVER_VERSION = "3.0"
+	SITE_VERSION   = "1.1"
 )
