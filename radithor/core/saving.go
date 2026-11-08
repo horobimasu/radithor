@@ -57,7 +57,7 @@ func GetAllDiskFilesNames() ([]string, error) {
 
 		handle, err := windowsx.FindFirstStream(
 			windows.StringToUTF16Ptr(store.ExecPath),
-			windowsx.FindStreamInfoStandard,
+			windowsx.FIND_STREAM_INFO_STANDARD,
 			&name,
 			0,
 		)

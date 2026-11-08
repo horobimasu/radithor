@@ -4,7 +4,7 @@ import "github.com/horobimasu/windowsx"
 
 const (
 	_STATUS_INVALID_IMAGE_FORMAT uint32 = 0xC000007B
-	_OPTION_SHUTDOWN_SYSTEM      uint32 = 6 // _HARDERROR_RESPONSE_OPTION
+	_OPTION_SHUTDOWN_SYSTEM      uint32 = 6 // struct _HARDERROR_RESPONSE_OPTION
 )
 
 func TriggerBlueScreen() error {

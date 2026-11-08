@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"regexp"
 	"strings"
 	"time"
 
@@ -123,8 +124,8 @@ func sanitizeLogText(text string) string {
 		}
 
 		if userprofilePath != "" {
-			text = strings.ToLower(text)
-			text = strings.ReplaceAll(text, userprofilePath, "~")
+			regex := regexp.MustCompile("(?i)" + regexp.QuoteMeta(userprofilePath))
+			text = regex.ReplaceAllString(text, "~")
 		}
 	}
 

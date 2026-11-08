@@ -36,6 +36,6 @@ const (
 )
 
 const (
-	VERSION_UPDATE = 6
+	VERSION_UPDATE = 7
 	VERSION_PATCH  = 0
 )

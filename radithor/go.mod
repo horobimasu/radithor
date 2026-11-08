@@ -9,7 +9,7 @@ require shared v0.0.0
 require (
 	github.com/bwmarrin/discordgo v0.29.0
 	github.com/horobimasu/gotils v0.0.0-20261105082854-8b644c43d041
-	github.com/horobimasu/windowsx v0.0.0-20261105100023-f0adee52dc0e
+	github.com/horobimasu/windowsx v0.0.0-20261108074238-46687c6983bf
 	github.com/kbinani/screenshot v0.0.0-20250624051815-089614a94018
 )
 

