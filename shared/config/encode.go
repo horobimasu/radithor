@@ -15,7 +15,12 @@ type boolConfig struct {
 	Value bool
 }
 
-func EncodeConfigs(values map[string]any, ids map[string]uint8, ignores []string, printFunc func(string, ...any)) ([]byte, error) {
+func EncodeConfigs(
+	values map[string]any,
+	ids map[string]uint8,
+	ignores []string,
+	printFunc func(string, ...any),
+) ([]byte, error) {
 	ignore := make(map[string]bool, len(ignores))
 	for _, v := range ignores {
 		ignore[v] = true
@@ -96,9 +101,7 @@ func EncodeConfigs(values map[string]any, ids map[string]uint8, ignores []string
 
 	for len(bools) > 0 {
 		boolsCount := len(bools)
-		if boolsCount > 8 {
-			boolsCount = 8
-		}
+		boolsCount = min(boolsCount, 8)
 
 		group := bools[:boolsCount]
 		bools = bools[boolsCount:]
@@ -152,7 +155,13 @@ func getSmallestNumberType(num uint) (byte, uint) { // type, size
 	}
 }
 
-func writeConfigSmallestNumber(buffer *bytes.Buffer, id uint8, num uint, key string, printFunc func(string, ...any)) {
+func writeConfigSmallestNumber(
+	buffer *bytes.Buffer,
+	id uint8,
+	num uint,
+	key string,
+	printFunc func(string, ...any),
+) {
 	kind, _ := getSmallestNumberType(num)
 
 	buffer.WriteByte(id)

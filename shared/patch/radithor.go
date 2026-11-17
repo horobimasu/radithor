@@ -1,15 +1,19 @@
 package patch
 
+import "shared"
+
 type SavedState struct {
-	Fingerprint       [8]uint8
+	Fingerprint       [shared.FINGERPRINT_LEN]uint8
 	InitDone          bool
-	DeviceFingerprint [32]uint8
+	DeviceFingerprint [shared.ENCRYPTION_KEY_LEN]uint8
 }
 
 var RawSavedState = []byte{
-	0x6C, 0x7D, 0x46, 0x8A, // Fingerprint
-	0x14, 0x24, 0x21, 0xBE, // Fingerprint
-	0x00,                   // InitDone
+	0x21, 0x81, 0xDF, 0xE9, // Fingerprint
+	0x34, 0xDD, 0x4F, 0xE3, // Fingerprint
+
+	0x00, // InitDone
+
 	0x00, 0x00, 0x00, 0x00, // DeviceFingerprint
 	0x00, 0x00, 0x00, 0x00, // DeviceFingerprint
 	0x00, 0x00, 0x00, 0x00, // DeviceFingerprint
@@ -21,14 +25,15 @@ var RawSavedState = []byte{
 }
 
 type EncryptionKeys struct {
-	Fingerprint  [8]uint8 // me when the reflection shit rapes itself when not exported:
-	ConfigKey    [32]uint8
-	DiskFilesKey [32]uint8
+	Fingerprint  [shared.FINGERPRINT_LEN]uint8 // me when the reflection shit rapes itself when not exported:
+	ConfigKey    [shared.ENCRYPTION_KEY_LEN]uint8
+	DiskFilesKey [shared.ENCRYPTION_KEY_LEN]uint8
 }
 
 var RawEncryptionKeys = []byte{ // LIVE_BUILDER_MATCH:ENCRYPTION_KEYS_FINGERPRINT
-	0x0E, 0x1B, 0x22, 0xB6, // Fingerprint
-	0x20, 0xF4, 0x2F, 0xC0, // Fingerprint
+	0x3C, 0x41, 0x22, 0xB5, // Fingerprint
+	0x77, 0xE3, 0x45, 0xC1, // Fingerprint
+
 	0x00, 0x00, 0x00, 0x00, // ConfigKey
 	0x00, 0x00, 0x00, 0x00, // ConfigKey
 	0x00, 0x00, 0x00, 0x00, // ConfigKey
@@ -37,6 +42,7 @@ var RawEncryptionKeys = []byte{ // LIVE_BUILDER_MATCH:ENCRYPTION_KEYS_FINGERPRIN
 	0x00, 0x00, 0x00, 0x00, // ConfigKey
 	0x00, 0x00, 0x00, 0x00, // ConfigKey
 	0x00, 0x00, 0x00, 0x00, // ConfigKey
+
 	0x00, 0x00, 0x00, 0x00, // DiskFilesKey
 	0x00, 0x00, 0x00, 0x00, // DiskFilesKey
 	0x00, 0x00, 0x00, 0x00, // DiskFilesKey
