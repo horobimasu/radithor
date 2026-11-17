@@ -6,9 +6,7 @@ import utils from './utils';
 
 const projectItems = [
     'builder',
-    'dropper',
     'radithor',
-    'runner',
     'shared'
 ];
 
