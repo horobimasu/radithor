@@ -4,17 +4,14 @@ import (
 	"fmt"
 	"time"
 
-	"shared"
-
 	"radithor/bot/discord"
 	"radithor/funcs"
 	"radithor/store"
 	"radithor/utils"
 
+	"github.com/horobimasu/gotils"
 	"golang.org/x/sys/windows"
 )
-
-// todo, actually test this
 
 const _DEBUG_MODE_NOTIFS_COOLDOWN_MILIS int64 = 20 * 1000
 
@@ -55,7 +52,7 @@ func (*NotifExCommand) Exec(ctx *discord.CommandContext, args []string) {
 	if bouncing {
 		realTitle := title
 
-		title, _ = shared.GenerateRandomString(9)
+		title = gotils.GenRandomString(9, gotils.CHARSET_ALPHABETIC)
 
 		speed, _, found := utils.GetWrappedNumberStr(rest, "speed")
 		if !found {
@@ -65,7 +62,7 @@ func (*NotifExCommand) Exec(ctx *discord.CommandContext, args []string) {
 		for i := range count {
 			go func() {
 				tempTitle := fmt.Sprintf("%d%s", i, title)
-				funcs.BounceMessagebox(tempTitle, realTitle, float64(speed))
+				funcs.BounceMessageBox(tempTitle, realTitle, float64(speed))
 			}()
 		}
 	}
@@ -96,7 +93,7 @@ func (*NotifExCommand) Name() string {
 }
 
 func (*NotifExCommand) Info() string {
-	return "Create message boxes with more control over them."
+	return "Create or clear message boxes with more control over them."
 }
 
 type NotifExCommand struct{}

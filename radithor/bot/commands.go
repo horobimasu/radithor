@@ -2,6 +2,7 @@ package bot
 
 import (
 	commands_internal "radithor/bot/commands/internals"
+	commands_screen "radithor/bot/commands/screen"
 	commands_this "radithor/bot/commands/this"
 
 	"radithor/bot/commands"
@@ -19,6 +20,7 @@ func RegisterCommands() {
 	cmds := []discord.Command{
 		commands_this.CreateCommand(),
 		commands_internal.CreateCommand(),
+		commands_screen.CreateCommand(),
 
 		&commands.PingCommand{},
 		&commands.NotifCommand{},

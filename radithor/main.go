@@ -55,7 +55,7 @@ func main() {
 
 	switch argc {
 	case 1: // exec path
-		savedState, err := utils.Deserialize[patch.SavedState](patch.RawSavedState)
+		savedState, err := gotils.DeserializeStruct[patch.SavedState](patch.RawSavedState)
 		if err != nil {
 			core.LogError("[main] failed to deserialize saved state - %v", err)
 			os.Exit(0)
@@ -164,7 +164,7 @@ func setup(savedState patch.SavedState) {
 		savedState.DeviceFingerprint = core_funcs.GenerateFingerprint()
 	}
 
-	newSavedState, err := utils.Serialize(savedState)
+	newSavedState, err := gotils.SerializeStruct(savedState)
 	if err != nil {
 		core.LogError("[setup] failed to serialize saved state - %v", err)
 		os.Exit(0)
@@ -313,7 +313,7 @@ func checkCanLaunch(savedState patch.SavedState) bool {
 }
 
 func initConfig() error {
-	encryptionKeys, err := utils.Deserialize[patch.EncryptionKeys](patch.RawEncryptionKeys)
+	encryptionKeys, err := gotils.DeserializeStruct[patch.EncryptionKeys](patch.RawEncryptionKeys)
 	if err != nil {
 		return err
 	}

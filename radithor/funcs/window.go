@@ -15,7 +15,7 @@ const _BOUNCE_FPS int64 = 60
 // endermanch did it with 2989.exe
 // but that needed some retarded version thing in comctl32
 // which i did NOT want to do, especially in golang
-func BounceMessagebox(tempTitle string, newTitle string, speed float64) error {
+func BounceMessageBox(tempTitle string, newTitle string, speed float64) error {
 	var handle uintptr
 
 	timeout := time.Now().Add(6 * time.Second)

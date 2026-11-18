@@ -8,6 +8,17 @@ import (
 	"strings"
 )
 
+func FindNumber(splitText []string) (int, bool) {
+	for _, word := range splitText {
+		num, err := strconv.Atoi(word)
+		if err == nil {
+			return num, true
+		}
+	}
+
+	return 0, false
+}
+
 func HasFlag(splitText []string, flag string) bool {
 	return slices.Contains(splitText, "-"+flag)
 }

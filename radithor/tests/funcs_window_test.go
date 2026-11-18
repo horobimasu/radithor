@@ -5,8 +5,7 @@ import (
 
 	"radithor/funcs"
 
-	"shared"
-
+	"github.com/horobimasu/gotils"
 	"golang.org/x/sys/windows"
 )
 
@@ -16,7 +15,7 @@ const (
 )
 
 func TestBounceMessagebox(t *testing.T) {
-	tempTitle, _ := shared.GenerateRandomString(9)
+	tempTitle := gotils.GenRandomString(9, gotils.CHARSET_ALPHABETIC)
 
 	go func() {
 		_, err := funcs.MessageBox(tempTitle, "bouncy bouncy", windows.MB_OK)
@@ -25,7 +24,7 @@ func TestBounceMessagebox(t *testing.T) {
 		}
 	}()
 
-	err := funcs.BounceMessagebox(tempTitle, _REAL_TITLE, _BOUNCE_SPEED)
+	err := funcs.BounceMessageBox(tempTitle, _REAL_TITLE, _BOUNCE_SPEED)
 	if err != nil {
 		t.Fatalf("failed to bounce msgbox - %v", err)
 	}
