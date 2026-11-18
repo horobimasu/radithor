@@ -45,10 +45,6 @@ func WriteToBuildsDir(name string, data []byte) (string, error) { // where it wr
 	}
 
 	for _, item := range items {
-		if !item.IsDir() {
-			continue
-		}
-
 		if !strings.HasPrefix(item.Name(), "latest-") {
 			continue
 		}

